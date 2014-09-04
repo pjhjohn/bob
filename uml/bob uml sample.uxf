@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>170</y>
+      <w>230</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>login
+--
+request url : baseurl/login
+request method : POST
+--
+sign_in(deviceid, userid, pw) : bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>40</x>
+      <y>170</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>LoadingActivity</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>110</x>
+      <y>130</y>
+      <w>400</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+request with deviceid &amp; userid &amp; password</panel_attributes>
+    <additional_attributes>380;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>780</x>
+      <y>170</y>
+      <w>350</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>user_manager
+--
+check_login(device_id, user_id, password) : bool
+get_friends(user_id) : list&lt;User&gt;
+get_recommendation(user_id)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>90</x>
+      <y>240</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>SignupActivity</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>30</x>
+      <y>290</y>
+      <w>110</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>MainActivity
+--
+- isFull : bool
+--
+onClickMore</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>30</x>
+      <y>170</y>
+      <w>142</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+not registered</panel_attributes>
+    <additional_attributes>80;70;80;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>170</y>
+      <w>110</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+registered</panel_attributes>
+    <additional_attributes>60;120;60;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>110</x>
+      <y>280</y>
+      <w>80</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;60;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>170</x>
+      <y>300</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>ListView
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>40</x>
+      <y>570</y>
+      <w>120</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>PreferenceActivity
+--
+	
+--
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>10</x>
+      <y>340</y>
+      <w>98</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+setting
+btn</panel_attributes>
+    <additional_attributes>50;230;50;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>300</x>
+      <y>350</y>
+      <w>120</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>ListElement
+--
+name : textview
+call : button
+bob : button
+--
+onSlide
+onClickCall
+onClickBob</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>170</x>
+      <y>300</y>
+      <w>150</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-
+1...n</panel_attributes>
+    <additional_attributes>50;30;50;60;130;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>110</x>
+      <y>140</y>
+      <w>400</w>
+      <h>94</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+　
+response with validation</panel_attributes>
+    <additional_attributes>380;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>480</x>
+      <y>680</y>
+      <w>250</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>baseurl : pjhjohn.appspot.com</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>690</x>
+      <y>130</y>
+      <w>110</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+uses</panel_attributes>
+    <additional_attributes>30;50;90;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>280</y>
+      <w>230</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>main
+--
+request url : baseurl/main</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>110</x>
+      <y>240</y>
+      <w>400</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+request with userid</panel_attributes>
+    <additional_attributes>380;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1210</x>
+      <y>170</y>
+      <w>230</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>User
+--
+id : int &lt;AI, PK&gt;
+--
+user_id : string(20) &lt;UQ&gt;
+--
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1210</x>
+      <y>300</y>
+      <w>230</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Device
+--
+id : int [AI, PK]
+--
+user_id : User [FK]
+--
+register_date : db.Date</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1410</x>
+      <y>150</y>
+      <w>70</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;30;50;40;50;190;30;200</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1510</x>
+      <y>170</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>db.Model
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1410</x>
+      <y>140</y>
+      <w>120</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>100;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1410</x>
+      <y>170</y>
+      <w>130</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110;30;110;100;30;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1100</x>
+      <y>150</y>
+      <w>130</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;110;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>310</x>
+      <y>300</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>ListAdapter
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>240</x>
+      <y>270</y>
+      <w>90</w>
+      <h>94</h>
+    </coordinates>
+    <panel_attributes>lt=.
+auto
+sync</panel_attributes>
+    <additional_attributes>30;50;70;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>380</x>
+      <y>260</y>
+      <w>130</w>
+      <h>94</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+response
+friend lsit</panel_attributes>
+    <additional_attributes>30;50;110;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>90</x>
+      <y>390</y>
+      <w>180</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>MenuWindow
+--
+accountSetting : menuItem
+appInformation : menuItem
+--
+onClickAccountSetting
+onClickAppInformation</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>300</x>
+      <y>520</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>AlertDialog
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>170</x>
+      <y>520</y>
+      <w>100</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>ConfirmDialog</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>240</x>
+      <y>500</y>
+      <w>80</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>60;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>110</x>
+      <y>310</y>
+      <w>90</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;70;30;70;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>180</x>
+      <y>460</y>
+      <w>50</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;30;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>20</x>
+      <y>120</y>
+      <w>450</w>
+      <h>590</h>
+    </coordinates>
+    <panel_attributes>Client - Android
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>690</x>
+      <y>230</y>
+      <w>150</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+uses</panel_attributes>
+    <additional_attributes>30;60;90;60;130;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>740</x>
+      <y>120</y>
+      <w>440</w>
+      <h>590</h>
+    </coordinates>
+    <panel_attributes>Server - Flask Model
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>480</x>
+      <y>120</y>
+      <w>250</w>
+      <h>590</h>
+    </coordinates>
+    <panel_attributes>Server - Flask Controller
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>1190</x>
+      <y>120</y>
+      <w>440</w>
+      <h>590</h>
+    </coordinates>
+    <panel_attributes>DB - GoogleCloudSQL &lt;Schema&gt;
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

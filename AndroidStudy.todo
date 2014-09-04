@@ -1,0 +1,39 @@
+[http://developer.android.com/training/index.html]
+
+1. Building Your First App
+☆ > Creating an Android Project
+☆ > Running Your Application
+☆ > Building a Simple User Interface
+☆ > Starting Another Activity
+
+2. Adding the Action Bar
+☆ > Setting Up the Action Bar
+☆ > Adding Action Buttons
+   > Styling the Action Bar
+   > Overlaying the Action Bar
+
+3. Supporting Different Devices
+   > Supporting Different Languages
+☆ > Supporting Different Screens
+   > Supporting Different Platform Versions
+
+4. Managing the Activity Lifecycle
+☆ > Starting an Activity
+☆ > Pausing and Resuming an Activity
+☆ > Stopping and Restarting an Activity
+   > Recreating an Activity
+
+5. Building a Dynamic UI with Fragments
+   > Creating a Fragment
+   > Building a Flexable UI
+   > Communicating with Other Fragments
+
+6. Saving Data
+☆ > Saving Key-Value Sets
+   > Saving Files
+   > Saving Data in SQL Databases
+
+7. Interacting with Other Apps
+   > Sending the User to Another App
+☆ > Getting a Result from the Activity
+   > Allowing Other Apps to Start Your Activity

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.httprequesttest.util.SystemUiHider;
 import com.example.httprequesttest.util.RequestAsyncTask;
 
-public class FullscreenActivity extends Activity {
+public class MainActivity extends Activity {
 	private static final boolean AUTO_HIDE = true;
 	private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 	private static final boolean TOGGLE_ON_CLICK = true;
