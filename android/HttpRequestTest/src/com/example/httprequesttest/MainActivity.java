@@ -5,14 +5,14 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.httprequesttest.request.OnResponse;
+import com.example.httprequesttest.request.RequestForm;
 import com.example.httprequesttest.util.SystemUiHider;
-import com.example.httprequesttest.util.RequestAsyncTask;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnResponse{
 	private static final boolean AUTO_HIDE = true;
 	private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 	private static final boolean TOGGLE_ON_CLICK = true;
@@ -114,10 +114,9 @@ public class MainActivity extends Activity {
 			TextView content = (TextView) findViewById(R.id.fullscreen_content);
 			if ( REQUEST_READY ) { 
 				content.setText("REQUEST SENT!");
-				Log.e(this.getClass().toString(), "onClick Envoked!!");
-				RequestAsyncTask requestAsync = new RequestAsyncTask();
-				requestAsync.setTextView(content);
-				requestAsync.execute("http://pjhjohn.appspot.com/");
+				RequestForm form = new RequestForm(MainActivity.this);
+				form.add("test-name", "test-value");
+				form.sendTo("http://pjhjohn.appspot.com/");
 				REQUEST_READY = !REQUEST_READY;
 			} else {
 				content.setText("READY TO\nREQUEST");
@@ -142,5 +141,10 @@ public class MainActivity extends Activity {
 	private void delayedHide(int delayMillis) {
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
+	}
+
+	@Override
+	public void onResponse(String response) {
+		((TextView) findViewById(R.id.fullscreen_content)).setText(response);
 	}
 }
