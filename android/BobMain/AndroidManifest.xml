@@ -15,11 +15,12 @@
         android:theme="@style/CustomActionBarTheme" >
         <activity
             android:name=".BobMainActivity"
-            android:label="@string/bob" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/bob" 
+            android:parentActivityName=".SignUp" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.bobmain.SignUp" />
+            
         </activity>
         <activity
             android:name=".DisplayAddFriendActivity"
@@ -28,6 +29,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.bobmain.BobMainActivity" />
+        </activity>
+        <activity
+            android:name=".SignUp"
+			android:theme="@style/NoActionBar"
+            android:label="@string/title_activity_sign_up" >
+			<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        
         </activity>
     </application>
 
