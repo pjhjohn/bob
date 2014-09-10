@@ -1,4 +1,4 @@
-package com.example.wecookbob.request;
+package com.appspot.wecookbob.request;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

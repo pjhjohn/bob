@@ -1,3 +1,4 @@
+
 <resources>
 
     <!--
@@ -7,11 +8,11 @@
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
         <!-- API 11 theme customizations can go here. -->
     </style>
-    
-    <!-- No Action Bar -->
-    <style name="NoActionBar" parent="Theme.AppCompat.Light">
-	    <item name="android:windowActionBar">false</item>
-    	<item name="android:windowNoTitle">true</item>
-	</style>
 
+	<style name="NoActionBar" parent="Theme.AppCompat.Light">
+        <!-- API 11 theme customizations can go here. -->
+        <item name="android:windowActionBar">false</item>
+	    <item name="android:windowNoTitle">true</item> 
+    </style>
+    
 </resources>

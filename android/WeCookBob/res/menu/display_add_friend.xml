@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.wecookbob.MainActivity" >
+    tools:context="com.example.bobmain.DisplayAddFriendActivity" >
 
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+		android:icon="@drawable/get_friend_list"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_settings"/>
 
 </menu>
