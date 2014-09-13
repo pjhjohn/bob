@@ -8,11 +8,10 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.httprequesttest.request.OnResponse;
-import com.example.httprequesttest.request.RequestForm;
+import com.example.httprequesttest.request.PostRequestForm;
 import com.example.httprequesttest.util.SystemUiHider;
 
-public class MainActivity extends Activity implements OnResponse{
+public class MainActivity extends Activity implements PostRequestForm.OnResponse{
 	private static final boolean AUTO_HIDE = true;
 	private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 	private static final boolean TOGGLE_ON_CLICK = true;
@@ -109,14 +108,13 @@ public class MainActivity extends Activity implements OnResponse{
 	 * while interacting with activity UI.
 	 */
 	View.OnClickListener mDelayHideClickListener = new View.OnClickListener() {
-		@Override
 		public void onClick(View view) {
 			TextView content = (TextView) findViewById(R.id.fullscreen_content);
 			if ( REQUEST_READY ) { 
 				content.setText("REQUEST SENT!");
-				RequestForm form = new RequestForm(MainActivity.this);
-				form.add("test-name", "test-value");
-				form.sendTo("http://pjhjohn.appspot.com/");
+				PostRequestForm form = new PostRequestForm(MainActivity.this, "http://pjhjohn.appspot.com/");
+				form.put("test-name", "test-value");
+				form.submit();
 				REQUEST_READY = !REQUEST_READY;
 			} else {
 				content.setText("READY TO\nREQUEST");
