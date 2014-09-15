@@ -16,5 +16,12 @@
     <string name="start_bob">식사 시작하기</string>
 	<string name="user_name">이름</string>
 	<string name="user_phone_number">전화번호</string>
+	<string name="friends_to_invite_list">친구초대</string>
+	<string name="user_id">아이디</string>
+	<string name="password">비밀번호</string>
+	<string name="password_check">비밀번호 확인</string>
+	<string name="sign_up_complete">가입 완료</string>
+	<string name="send_first_bob">첫밥 보내기</string>
+	
 
 </resources>

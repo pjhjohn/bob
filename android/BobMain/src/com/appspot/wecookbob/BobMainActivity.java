@@ -1,22 +1,14 @@
-package com.example.bobmain;
-import android.widget.Toast;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Switch;
-import android.content.Intent;
-
-
-
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
+package com.appspot.wecookbob;
+import android.content.*;
+import android.os.*;
+import android.support.v7.app.*;
 import android.view.*;
-import android.content.Intent;
-import android.content.Intent;
-
-import android.content.Intent;
+import android.widget.*;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class BobMainActivity extends ActionBarActivity {
     Switch sw;
+	String[] data = {"이동우", "김대홍", "선재원 연세대 의학", "조경욱"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +31,10 @@ public class BobMainActivity extends ActionBarActivity {
             }
         });
         
+        
         sw = (Switch) findViewById(R.id.status_switch);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
- 
+        	
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                     boolean ischecked) {
@@ -54,6 +47,10 @@ public class BobMainActivity extends ActionBarActivity {
                 }
             }
         });
+        
+        ListView list = (ListView) findViewById(R.id.FirendsAlreadyAddedlistView);
+		ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data);
+		list.setAdapter(adapter);
  
     }
 
