@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.bobmain.SignUp" >
+    tools:context="com.example.wecookbob.SignUp" >
 
     <item
         android:id="@+id/action_settings"

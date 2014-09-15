@@ -6,7 +6,7 @@ import android.os.*;
 import android.view.*;
 import android.widget.*;
 
-public class SignUp extends Activity {
+public class SignUpActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class SignUp extends Activity {
 	}
 	
     public void showBobMain(View view) {
-    	Toast.makeText(SignUp.this, "밥 메인페이지로",
+    	Toast.makeText(SignUpActivity.this, "밥 메인페이지로",
                 Toast.LENGTH_SHORT).show();
     	Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

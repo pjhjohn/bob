@@ -1,11 +1,17 @@
 package com.appspot.wecookbob;
 
+import java.util.ArrayList;
+
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -13,11 +19,14 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
+
 
 public class MainActivity extends ActionBarActivity {
     Switch sw;
-	String[] data = {"A", "B", "C", "D"};
-
+	SQLiteDatabase bobLogDb;
+	BobLogSQLiteOpenHelper bobLogHelper;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +48,6 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         
-        
         sw = (Switch) findViewById(R.id.status_switch);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
         	
@@ -55,14 +63,21 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         });
-        
-        ListView list = (ListView) findViewById(R.id.FriendsAlreadyAddedlistView);
-		ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data);
-		list.setAdapter(adapter);
- 
+//        if (checkDataBase()) showList();
     }
 
-
+    private boolean checkDataBase() {
+		SQLiteDatabase checkBobLogDb = null;
+		try {
+			checkBobLogDb = SQLiteDatabase.openDatabase("//data/data/com.appspot.wecookbob/databases/boblog.db", null,
+					SQLiteDatabase.OPEN_READONLY);
+			checkBobLogDb.close();
+		} catch (SQLiteException e) {
+			// database doesn't exist yet.
+		}
+		return checkBobLogDb != null ? true : false;
+	}
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -87,14 +102,55 @@ public class MainActivity extends ActionBarActivity {
           return super.onOptionsItemSelected(item);
     }
     
-    
     public void showAddFriendTab(View view) {
     	Toast.makeText(MainActivity.this, "친구 페이지",
                 Toast.LENGTH_SHORT).show();
-    	Intent intent = new Intent(this, DisplayAddFriendActivity.class);
+    	Intent intent = new Intent(this, ContactsActivity.class);
         startActivity(intent);
 
         // Do something in response to button
     }
+    
+    public void showList() {
+		bobLogHelper = new BobLogSQLiteOpenHelper(MainActivity.this,
+				"boblog.db",
+				null,
+				1);
+		bobLogDb = bobLogHelper.getReadableDatabase();
+		Cursor contactsCursor = bobLogDb.query("boblog", null, null, null, null, null, null);
+
+		// put first bob list here
+
+		ArrayList<String> arrayList = new ArrayList<String>();
+
+		while (contactsCursor.moveToNext()) {
+			String userName = contactsCursor.getString(contactsCursor.getColumnIndex("userName"));
+			arrayList.add(userName);
+		}
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
+
+		ListView list;
+		list = (ListView)findViewById(R.id.FriendsToInvitelistView);
+		list.setAdapter(adapter);
+		list.setChoiceMode(list.CHOICE_MODE_SINGLE);
+		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				ListView list = (ListView) parent;
+				// TODO 아이템 클릭시에 구현할 내용은 여기에.
+				String[] userName = { (String)list.getItemAtPosition(position) };
+				bobLogHelper = new BobLogSQLiteOpenHelper(MainActivity.this,
+						"contacts.db",
+						null,
+						1);
+				bobLogDb = bobLogHelper.getReadableDatabase();
+				Cursor c = bobLogDb.rawQuery("SELECT * FROM contacts WHERE userName = ?", userName);
+				c.moveToFirst();
+				String bobtnerPhoneNumber = c.getString(c.getColumnIndex("bobtnerPhoneNumber"));
+				Toast.makeText(MainActivity.this, bobtnerPhoneNumber, Toast.LENGTH_LONG).show();
+			}
+		});
+	}
 }
 

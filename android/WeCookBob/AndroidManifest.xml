@@ -20,14 +20,14 @@
         <activity
             android:name="com.appspot.wecookbob.MainActivity"
             android:label="@string/bob" 
-            android:parentActivityName="com.appspot.wecookbob.SignUp" >
+            android:parentActivityName="com.appspot.wecookbob.SignUpActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appspot.wecookbob.SignUp" />
             
         </activity>
         <activity
-            android:name="com.appspot.wecookbob.DisplayAddFriendActivity"
+            android:name="com.appspot.wecookbob.ContactsActivity"
             android:label="@string/bob"
             android:parentActivityName="com.appspot.wecookbob.MainActivity" >
             <meta-data
@@ -35,7 +35,7 @@
                 android:value="com.appspot.wecookbob.BobMainActivity" />
         </activity>
         <activity
-            android:name="com.appspot.wecookbob.SignUp"
+            android:name="com.appspot.wecookbob.SignUpActivity"
 			android:theme="@style/NoActionBar"
             android:label="@string/title_activity_sign_up" >
 			<intent-filter>

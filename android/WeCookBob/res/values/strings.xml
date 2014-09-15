@@ -12,7 +12,7 @@
     <string name="title_activity_display_add_friend">DisplayAddFriendActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="get_friend_list">주소록 동기화</string>
-    <string name="title_activity_sign_up">SignUp</string>
+    <string name="title_activity_sign_up">AppName</string>
     <string name="start_bob">식사 시작하기</string>
 	<string name="user_name">이름</string>
 	<string name="user_phone_number">전화번호</string>
