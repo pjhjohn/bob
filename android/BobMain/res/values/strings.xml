@@ -22,6 +22,13 @@
 	<string name="password_check">비밀번호 확인</string>
 	<string name="sign_up_complete">가입 완료</string>
 	<string name="send_first_bob">첫밥 보내기</string>
+	<string name="get_certification_number">인증번호 받기</string>
+	<string name="phonenumber">전화번호</string>
+	<string name="certification_number">인증 번호</string>
+	<string name="certification_complete">인증</string>
+	
+	
+	
 	
 
 </resources>
