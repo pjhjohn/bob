@@ -4,8 +4,9 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:orientation="horizontal">
+	
 	<TextView
-		android:id="@+id/invite_friend_name"
+		android:id="@+id/send_first_bob_friend_name"
 		android:text="TextView"
 		android:layout_weight="1"
 		android:layout_height="wrap_content"
@@ -14,14 +15,12 @@
 		>
 	    
 	</TextView>
-	<Button
-	    android:id="@+id/btn_invite"
+	<ImageButton
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="초대"
-	    android:onClick="send_invite_message"
-		android:textColor="#ffffff"
-	    android:background="#FF6F48"
-	     />
+		android:onClick="send_invite_message"
+		android:background="#ffffff"
+	    android:src="@drawable/first_bob" />
 
 </LinearLayout>
+

@@ -1,7 +1,6 @@
 package com.appspot.wecookbob;
 
 import java.util.*;
-
 import android.app.*;
 import android.content.*;
 import android.database.*;
@@ -17,12 +16,15 @@ import com.appspot.wecookbob.lib.*;
 
 public class DisplayAddFriendActivity extends Activity {
 	// 리스트 뷰 선
-	private ListView listview;
+	private ListView inviteFriendlistview, sendFirstBoblistview;
 	// 데이터를 연결할 어댑
-	InviteFriendDataAdapter adapter;
+	inviteFriendDataAdapter invite_adapter;
+	sendFirstBobAdapter send_first_bob_adapter;
+	
 	// 데이터를 담을 자료구조. 씨데이터.
-	ArrayList<InviteFriendCData> alist;
-
+	ArrayList<InviteFriendCData> inviteFriendlist;
+	ArrayList<sendFirstBobCData> sendFirstBoblist;
+	
 	SQLiteDatabase db;
     MySQLiteOpenHelper helper;
 	
@@ -35,30 +37,47 @@ public class DisplayAddFriendActivity extends Activity {
 		else getContact();
 		
 		// 선언한 리스트뷰에 사용할 리스트뷰를 연
-		listview = (ListView) findViewById(R.id.sendFirstBobList);
+		inviteFriendlistview = (ListView) findViewById(R.id.FriendsToInvitelistView);
+		sendFirstBoblistview = (ListView) findViewById(R.id.sendFirstBobList);
+		
 		// 객체를 생성
-		alist = new ArrayList<InviteFriendCData>();
+		inviteFriendlist = new ArrayList<InviteFriendCData>();
+		sendFirstBoblist = new ArrayList<sendFirstBobCData>(); 
+		
 		// 데이터 받기위한 데이터어댑터 객체 선언
-		adapter = new InviteFriendDataAdapter(this, alist);
-
+		invite_adapter = new inviteFriendDataAdapter(this, inviteFriendlist);
+		send_first_bob_adapter = new sendFirstBobAdapter(this, sendFirstBoblist);
+		
 		// 리스트뷰에 어댑터 연결
-		listview.setAdapter(adapter);
+		inviteFriendlistview.setAdapter(invite_adapter);
+		sendFirstBoblistview.setAdapter(send_first_bob_adapter);
+		
 		// ArrayAdapter를 통해서 ArrayList에 자료 저장
 		// 하나의 String값을 저장하던 것을 CData클래스의 객체를 저장하던것으로 변경
 		// CData 객체는 생성자에 리스트 표시 텍스트뷰1의 내용과 텍스트뷰2의 내용 그리고 사진이미지값을 어댑터에 연결
 	
 		// CData클래스를 만들때의 순서대로 해당 인수값을 입력
 		// 한줄 한줄이 리스트뷰에 뿌려질 한줄 한줄이라고 생각하면 됩니다.
-		adapter.add(new InviteFriendCData(getApplicationContext(), "친구1"));
-		adapter.add(new InviteFriendCData(getApplicationContext(), "친구2"));
-		adapter.add(new InviteFriendCData(getApplicationContext(), "친구3"));
+		invite_adapter.add(new InviteFriendCData(getApplicationContext(), "친구1"));
+		invite_adapter.add(new InviteFriendCData(getApplicationContext(), "친구2"));
+		invite_adapter.add(new InviteFriendCData(getApplicationContext(), "친구3"));
+		invite_adapter.add(new InviteFriendCData(getApplicationContext(), "친구4"));
+		invite_adapter.add(new InviteFriendCData(getApplicationContext(), "친구5"));
+		invite_adapter.add(new InviteFriendCData(getApplicationContext(), "친구6"));
+		
+		send_first_bob_adapter.add(new sendFirstBobCData(getApplicationContext(), "이동우"));
+		send_first_bob_adapter.add(new sendFirstBobCData(getApplicationContext(), "김대홍"));
+		send_first_bob_adapter.add(new sendFirstBobCData(getApplicationContext(), "박준호"));
+		send_first_bob_adapter.add(new sendFirstBobCData(getApplicationContext(), "남디"));
+		send_first_bob_adapter.add(new sendFirstBobCData(getApplicationContext(), "홍지호"));
+		send_first_bob_adapter.add(new sendFirstBobCData(getApplicationContext(), "조경욱"));
 		
 	}
-	private class InviteFriendDataAdapter extends ArrayAdapter<InviteFriendCData> {
+	private class inviteFriendDataAdapter extends ArrayAdapter<InviteFriendCData> {
 		// 레이아웃 XML을 읽어들이기 위한 객체
 		private LayoutInflater mInflater;
 		
-		public InviteFriendDataAdapter(Context context, ArrayList<InviteFriendCData> object) {
+		public inviteFriendDataAdapter(Context context, ArrayList<InviteFriendCData> object) {
 			// 상위 클래스의 초기화 과정
 			// context, 0, 자료구조
 			super(context, 0, object);
@@ -95,6 +114,62 @@ public class DisplayAddFriendActivity extends Activity {
 			return view;
 		}
 	}
+
+	private class sendFirstBobAdapter extends ArrayAdapter<sendFirstBobCData> {
+		// 레이아웃 XML을 읽어들이기 위한 객체
+		private LayoutInflater mInflater;
+		
+		public sendFirstBobAdapter(Context context, ArrayList<sendFirstBobCData> object) {
+			// 상위 클래스의 초기화 과정
+			// context, 0, 자료구조
+			super(context, 0, object);
+			mInflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		}
+		// 보여지는 스타일을 자신이 만든 xml로 보이기 위한 구
+		@Override
+		public View getView(int position, View v, ViewGroup parent) {
+			View view = null;
+
+			// 현재 리스트의 하나의 항목에 보일 컨트롤 얻기
+
+			if (v == null) {
+
+				// XML 레이아웃을 직접 읽어서 리스트뷰에 넣음
+				view = mInflater.inflate(R.layout.send_first_bob_list_item, null);
+			} else {
+
+				view = v;
+			}
+
+			// 자료를 받는다.
+			final sendFirstBobCData data = this.getItem(position);
+
+			if (data != null) {
+				// 화면 출력
+				TextView tv = (TextView) view.findViewById(R.id.send_first_bob_friend_name);
+				// 텍스트뷰1에 getLabel()을 출력 즉 첫번째 인수값
+				tv.setText(data.getUserName());
+			}
+			return view;
+		}
+	}
+
+
+	
+	// CData안에 받은 값을 직접 할당
+	class sendFirstBobCData {
+		private String send_first_bob_user_name;
+		
+		public sendFirstBobCData(Context context, String send_first_bob_user_name) {
+			this.send_first_bob_user_name = send_first_bob_user_name;
+		}
+
+		public String getUserName() {
+			return send_first_bob_user_name;
+		}
+	}
+	
 	
 	// CData안에 받은 값을 직접 할당
 	class InviteFriendCData {
