@@ -26,27 +26,29 @@ public class MainActivity extends ActionBarActivity {
     Switch sw;
 	SQLiteDatabase bobLogDb;
 	BobLogSQLiteOpenHelper bobLogHelper;
-	
+	String[] data = {"이동우", "김대홍", "선재원 연세대 의학", "조경욱"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bob_main);
 
-        sw = (Switch) findViewById(R.id.notification_switch);
+        sw = (Switch) findViewById(R.id.alarm_switch);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
  
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                     boolean ischecked) {
                 if (ischecked) {
-                    Toast.makeText(getApplicationContext(), "on",
+                    Toast.makeText(getApplicationContext(), "알림을 받습니다",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "off",
+                    Toast.makeText(getApplicationContext(), "알림을 거부합니다",
                             Toast.LENGTH_LONG).show();
                 }
             }
         });
+        
         
         sw = (Switch) findViewById(R.id.status_switch);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -55,29 +57,21 @@ public class MainActivity extends ActionBarActivity {
             public void onCheckedChanged(CompoundButton buttonView,
                     boolean ischecked) {
                 if (ischecked) {
-                    Toast.makeText(getApplicationContext(), "on",
+                    Toast.makeText(getApplicationContext(), "배고파 디질듯",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "off",
+                    Toast.makeText(getApplicationContext(), "배가 불렀네 불렀어",
                             Toast.LENGTH_LONG).show();
                 }
             }
         });
-//        if (checkDataBase()) showList();
+//      if (checkDataBase()) showList();
+        ListView list = (ListView) findViewById(R.id.mainFriendsListView);
+		ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data);
+		list.setAdapter(adapter);
     }
 
-    private boolean checkDataBase() {
-		SQLiteDatabase checkBobLogDb = null;
-		try {
-			checkBobLogDb = SQLiteDatabase.openDatabase("//data/data/com.appspot.wecookbob/databases/boblog.db", null,
-					SQLiteDatabase.OPEN_READONLY);
-			checkBobLogDb.close();
-		} catch (SQLiteException e) {
-			// database doesn't exist yet.
-		}
-		return checkBobLogDb != null ? true : false;
-	}
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -102,14 +96,29 @@ public class MainActivity extends ActionBarActivity {
           return super.onOptionsItemSelected(item);
     }
     
+    
     public void showAddFriendTab(View view) {
-    	Toast.makeText(MainActivity.this, "친구 페이지",
+    	Toast.makeText(MainActivity.this, "애드 프렌드",
                 Toast.LENGTH_SHORT).show();
     	Intent intent = new Intent(this, ContactsActivity.class);
         startActivity(intent);
 
         // Do something in response to button
     }
+    
+
+    private boolean checkDataBase() {
+		SQLiteDatabase checkBobLogDb = null;
+		try {
+			checkBobLogDb = SQLiteDatabase.openDatabase("//data/data/com.appspot.wecookbob/databases/boblog.db", null,
+					SQLiteDatabase.OPEN_READONLY);
+			checkBobLogDb.close();
+		} catch (SQLiteException e) {
+			// database doesn't exist yet.
+		}
+		return checkBobLogDb != null ? true : false;
+	}
+
     
     public void showList() {
 		bobLogHelper = new BobLogSQLiteOpenHelper(MainActivity.this,
@@ -131,7 +140,7 @@ public class MainActivity extends ActionBarActivity {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
 
 		ListView list;
-		list = (ListView)findViewById(R.id.FriendsToInvitelistView);
+		list = (ListView)findViewById(R.id.mainFriendsListView);
 		list.setAdapter(adapter);
 		list.setChoiceMode(list.CHOICE_MODE_SINGLE);
 		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

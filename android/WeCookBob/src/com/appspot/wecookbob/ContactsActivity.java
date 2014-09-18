@@ -1,6 +1,7 @@
 package com.appspot.wecookbob;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,6 +10,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
@@ -73,7 +75,6 @@ public class ContactsActivity extends Activity implements OnResponse {
 		ArrayList<String> contactsList = new ArrayList<String>();
 		ArrayList<String> firstBobList = new ArrayList<String>();
 		while (contactsCursor.moveToNext()) {
-			System.out.println("no userId");
 			String userName = contactsCursor.getString(contactsCursor.getColumnIndex("userName"));
 			contactsList.add(userName);
 		}
@@ -81,15 +82,36 @@ public class ContactsActivity extends Activity implements OnResponse {
 			String userName = firstBobCursor.getString(firstBobCursor.getColumnIndex("userName"));
 			firstBobList.add(userName);
 		}
+		
+		ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, firstBobList);
+		ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contactsList);
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contactsList);
-
-		ListView list;
-		list = (ListView)findViewById(R.id.FriendsToInvitelistView);
-		// TODO add first bob list here
-		list.setAdapter(adapter);
-		list.setChoiceMode(list.CHOICE_MODE_SINGLE);
-		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		ListView List1;
+		ListView List2;
+		List1 = (ListView)findViewById(R.id.firstBobListView);
+		List2 = (ListView)findViewById(R.id.friendsToInviteListView);
+		List1.setAdapter(adapter1);
+		List2.setAdapter(adapter2);
+		List1.setChoiceMode(List1.CHOICE_MODE_SINGLE);
+		List2.setChoiceMode(List2.CHOICE_MODE_SINGLE);
+		List1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				ListView list = (ListView) parent;
+				// TODO 아이템 클릭시에 구현할 내용은 여기에.
+				String[] userName = { (String)list.getItemAtPosition(position) };
+				contactsHelper = new ContactsSQLiteOpenHelper(ContactsActivity.this,
+						"contacts.db",
+						null,
+						1);
+				contactsDb = contactsHelper.getReadableDatabase();
+				Cursor c = contactsDb.rawQuery("SELECT * FROM contacts WHERE userName = ?", userName);
+				c.moveToFirst();
+				String phoneNumber = c.getString(c.getColumnIndex("phoneNumber"));
+				Toast.makeText(ContactsActivity.this, phoneNumber, Toast.LENGTH_LONG).show();
+			}
+		});
+		List2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView list = (ListView) parent;
@@ -139,7 +161,7 @@ public class ContactsActivity extends Activity implements OnResponse {
 	}
 
 	public void getContact() throws JSONException {
-		if (checkDataBase()) deleteDatabase("contacts.contactsDb");
+		if (checkDataBase()) deleteDatabase("contacts.db");
 		bobLogHelper = new BobLogSQLiteOpenHelper(ContactsActivity.this,
 				"boblog.db",
 				null,
@@ -179,12 +201,9 @@ public class ContactsActivity extends Activity implements OnResponse {
 
 		JSONArray dataCollection = new JSONArray();
 		for(int i = 0; i < contactlist.size(); i++) {
-			JSONObject dataToAppend = new JSONObject();
-			dataToAppend.put("phone-number", contactlist.get(i).getPhoneNumber());
-			dataCollection.put(dataToAppend);
+			dataCollection.put(contactlist.get(i).getPhoneNumber());
 		}
 		String stringToSend = dataCollection.toString();
-
 		RequestForm form = new RequestForm(ContactsActivity.this);
 		form.add("phone-number-list", stringToSend);
 		form.sendTo("http://wecookbob.appspot.com/contacts");
@@ -193,15 +212,23 @@ public class ContactsActivity extends Activity implements OnResponse {
 	public void insert(ArrayList<Contact> listToInsert) {
 		contactsDb = contactsHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		for (int i = 0; i < listToInsert.size(); i++) {
-			values.clear();
-			values.put("userName", listToInsert.get(i).getUserName());
-			values.put("phoneNumber", listToInsert.get(i).getPhoneNumber());
-			values.put("isUser", false);
-			if (listToInsert.get(i).getUserId() != null) values.put("userId",
-					listToInsert.get(i).getUserId());
-			contactsDb.insert("contacts", null, values);
+		try{
+			contactsDb.beginTransaction();
+			for (int i = 0; i < listToInsert.size(); i++) {
+				values.clear();
+				values.put("userName", listToInsert.get(i).getUserName());
+				values.put("phoneNumber", listToInsert.get(i).getPhoneNumber());
+				values.put("isUser", false);
+				if (listToInsert.get(i).getUserId() != null) values.put("userId",
+						listToInsert.get(i).getUserId());
+				contactsDb.insert("contacts", null, values);
+			}
+			contactsDb.setTransactionSuccessful();
+		} catch (SQLException e){
+		} finally {
+			contactsDb.endTransaction();
 		}
+		contactsDb.close();
 	}
 
 	public void update (String userName, String phoneNumber, boolean isUser, String userId) {
@@ -236,19 +263,14 @@ public class ContactsActivity extends Activity implements OnResponse {
 	public void onResponse(String responseBody) {
 		// TODO Auto-generated method stub
 		JSONObject jsonResponse;
-		System.out.println(responseBody);
 		try {
 			jsonResponse = new JSONObject(responseBody);
 			JSONArray dataCollection = jsonResponse.getJSONArray("user-id-list");
 			System.out.println(dataCollection);
 			for (int i = 0; i < dataCollection.length(); i++) {
-				Object userId = dataCollection.getJSONObject(i).get("user-id");
-				if (!userId.equals(null))
-				{
-					contactlist.get(i).setUserId(userId.toString());
-					System.out.println(contactlist.get(i).getUserId());
-					System.out.println("daehongjam!!");
-				}
+				Object userId = dataCollection.get(i);
+				System.out.println(userId);
+				if (!userId.equals(null)) contactlist.get(i).setUserId(userId.toString());
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

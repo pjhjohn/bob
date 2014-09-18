@@ -9,7 +9,9 @@ import android.view.animation.*;
 import android.widget.*;
 
 
-public class SignUpActivity extends Activity {
+
+
+public class SignUp extends Activity {
 	Button btnLogIn, btnSignUp;
 	ViewFlipper vf;
 	Animation slide_in_left, slide_out_right;
@@ -84,15 +86,15 @@ public class SignUpActivity extends Activity {
 	};
 	
     public void signUp(View view) {
-    	Toast.makeText(SignUpActivity.this, "가입완료되었습니다",
+    	Toast.makeText(SignUp.this, "가입완료되었습니다",
                 Toast.LENGTH_SHORT).show();
     }
 	
 	
     public void showBobMain(View view) {
-    	Toast.makeText(SignUpActivity.this, "밥 메인페이지로",
+    	Toast.makeText(SignUp.this, "밥 메인페이지로",
                 Toast.LENGTH_SHORT).show();
-    	Intent intent = new Intent(this, MainActivity.class);
+    	Intent intent = new Intent(this, BobMainActivity.class);
         startActivity(intent);
     }
 }

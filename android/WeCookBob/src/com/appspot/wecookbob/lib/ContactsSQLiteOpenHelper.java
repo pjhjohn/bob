@@ -22,7 +22,7 @@ public class ContactsSQLiteOpenHelper extends SQLiteOpenHelper {
 	                "userId string);";
 	        db.execSQL(sql);
 	    }
-	 
+
 	    @Override
 	    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	        String sql = "drop table if exists contacts";
