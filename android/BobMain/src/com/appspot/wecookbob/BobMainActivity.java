@@ -1,14 +1,21 @@
 package com.appspot.wecookbob;
-import android.content.*;
-import android.os.*;
-import android.support.v7.app.*;
-import android.view.*;
-import android.widget.*;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.Toast;
 
 public class BobMainActivity extends ActionBarActivity {
     Switch sw;
-	String[] data = {"이동우", "김대홍", "선재원 연세대 의학", "조경욱"};
+	String[] data = {"A", "B", "C", "D", "E"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +29,10 @@ public class BobMainActivity extends ActionBarActivity {
             public void onCheckedChanged(CompoundButton buttonView,
                     boolean ischecked) {
                 if (ischecked) {
-                    Toast.makeText(getApplicationContext(), "알림을 받습니다",
+                    Toast.makeText(getApplicationContext(), "알림",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "알림을 거부합니다",
+                    Toast.makeText(getApplicationContext(), "알림 ㄴㄴ",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -39,10 +46,10 @@ public class BobMainActivity extends ActionBarActivity {
             public void onCheckedChanged(CompoundButton buttonView,
                     boolean ischecked) {
                 if (ischecked) {
-                    Toast.makeText(getApplicationContext(), "배고파 디질듯",
+                    Toast.makeText(getApplicationContext(), "배곺",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "배가 불렀네 불렀어",
+                    Toast.makeText(getApplicationContext(), "배불",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -69,7 +76,7 @@ public class BobMainActivity extends ActionBarActivity {
     	  if(item.getItemId() == R.id.action_settings){
               // ( 1 ) add a new item 
                   // ( 2 ) change add to remove
-    		  Toast.makeText(BobMainActivity.this, "식사를 시작해볼텐가?",
+    		  Toast.makeText(BobMainActivity.this, "�앹궗瑜��쒖옉�대낵�먭�?",
                       Toast.LENGTH_SHORT).show();
           }
     	  else{
@@ -81,7 +88,7 @@ public class BobMainActivity extends ActionBarActivity {
     
     
     public void showAddFriendTab(View view) {
-    	Toast.makeText(BobMainActivity.this, "애드 프렌드",
+    	Toast.makeText(BobMainActivity.this, "초대",
                 Toast.LENGTH_SHORT).show();
     	Intent intent = new Intent(this, DisplayAddFriendActivity.class);
         startActivity(intent);
