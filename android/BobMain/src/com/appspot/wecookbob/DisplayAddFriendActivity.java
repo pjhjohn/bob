@@ -336,5 +336,11 @@ public class DisplayAddFriendActivity extends Activity {
     	Toast.makeText(DisplayAddFriendActivity.this, "초대 메세지를 보냅니다",
 				  Toast.LENGTH_SHORT).show();
     }
+    
+    public void send_first_bob(View view){
+    	Toast.makeText(DisplayAddFriendActivity.this, "첫밥 요청을 보냅니다",
+				  Toast.LENGTH_SHORT).show();
+    }
+    
 }
 
