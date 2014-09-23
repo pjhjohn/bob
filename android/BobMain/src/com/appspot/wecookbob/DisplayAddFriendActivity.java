@@ -2,8 +2,6 @@ package com.appspot.wecookbob;
 
 import java.util.ArrayList;
 
-import trash.InviteFriendAdapter;
-import trash.SendFirstBobAdapter;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -20,83 +18,69 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.appspot.wecookbob.custom.ContactUserData;
-import com.appspot.wecookbob.custom.ContactUserListviewAdapter;
-import com.appspot.wecookbob.lib.MySQLiteOpenHelper;
+import com.appspot.wecookbob.contact.ContactUser;
+import com.appspot.wecookbob.contact.ContactUserListviewAdapter;
+import com.appspot.wecookbob.model.MySQLiteOpenHelper;
 
 public class DisplayAddFriendActivity extends Activity {
-	private ListView lvInvite, lvFirstBob;
-	
-	ContactUserListviewAdapter inviteAdapter, sendFirstBobAdapter;
-	ArrayList<ContactUserData> inviteArray, sendFirstBobArray;
+	private ListView inviteListView, firstBobListView;
+	private ContactUserListviewAdapter inviteAdapter, firstBobAdapter;
+	private ArrayList<ContactUser> inviteArray, firstBobArray;
 	SQLiteDatabase db;
-    MySQLiteOpenHelper helper;
+	MySQLiteOpenHelper helper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_display_add_friend);
-		if (checkDataBase()) showList();
-		else getContact();
+		this.setContentView(R.layout.activity_display_add_friend);
+
+		// build listview for firstbob
+		firstBobListView = (ListView) findViewById(R.id.lv_first_bob);
+		firstBobArray = new ArrayList<ContactUser>();
+		firstBobArray.add(new ContactUser("BNAME1", 1));
+		firstBobArray.add(new ContactUser("BNAME2", 2));
+		firstBobArray.add(new ContactUser("BNAME3", 3));
+		firstBobArray.add(new ContactUser("BNAME4", 4));
+		firstBobArray.add(new ContactUser("BNAME5", 5));
+		firstBobAdapter = new ContactUserListviewAdapter(this, firstBobArray, R.layout.send_first_bob_list_item, R.id.send_first_bob_friend_name);
+		firstBobListView.setAdapter(firstBobAdapter);
+
 		
 		// build listview for invitation
-		lvInvite = (ListView) findViewById(R.id.FriendsToInvitelistView);
-		inviteArray = new ArrayList<ContactUserData>();
-		inviteArray.add(new ContactUserData("INAME1", false, 1));
-		inviteArray.add(new ContactUserData("INAME2", false, 2));
-		inviteArray.add(new ContactUserData("INAME3", false, 3));
-		inviteArray.add(new ContactUserData("INAME4", false, 4));
-		inviteArray.add(new ContactUserData("INAME5", false, 5));
-		inviteAdapter = new ContactUserListviewAdapter(this, inviteArray, R.layout.invite_friend_list_item);
-		lvInvite.setAdapter(inviteAdapter);
-		
-		lvFirstBob = (ListView) findViewById(R.id.FriendsToInvitelistView);
-		sendFirstBobArray = new ArrayList<ContactUserData>();
-		sendFirstBobArray.add(new ContactUserData("BNAME1", true, 1));
-		sendFirstBobArray.add(new ContactUserData("BNAME2", true, 2));
-		sendFirstBobArray.add(new ContactUserData("BNAME3", true, 3));
-		sendFirstBobArray.add(new ContactUserData("BNAME4", true, 4));
-		sendFirstBobArray.add(new ContactUserData("BNAME5", true, 5));
-		sendFirstBobAdapter = new ContactUserListviewAdapter(this, sendFirstBobArray, R.layout.send_first_bob_list_item);
-		lvFirstBob.setAdapter(sendFirstBobAdapter);
+		inviteListView = (ListView) findViewById(R.id.lv_invite);
+		inviteArray = new ArrayList<ContactUser>();
+		inviteArray.add(new ContactUser("INAME1", 1));
+		inviteArray.add(new ContactUser("INAME2", 2));
+		inviteArray.add(new ContactUser("INAME3", 3));
+		inviteArray.add(new ContactUser("INAME4", 4));
+		inviteArray.add(new ContactUser("INAME5", 5));
+		inviteAdapter = new ContactUserListviewAdapter(this, inviteArray, R.layout.invite_friend_list_item, R.id.invite_friend_name);
+		inviteListView.setAdapter(inviteAdapter);		
 	}
 	
-
-	private boolean checkDataBase() {
-	    SQLiteDatabase checkDB = null;
-	    try {
-	        checkDB = SQLiteDatabase.openDatabase("//data/data/com.appspot.wecookbob/databases/contact.db", null,
-	                SQLiteDatabase.OPEN_READONLY);
-	        checkDB.close();
-	    } catch (SQLiteException e) {
-	        // database doesn't exist yet.
-	    }
-	    return checkDB != null ? true : false;
+	private boolean checkDatabase() {
+		SQLiteDatabase dbForCheck = null;
+		try {
+			dbForCheck = SQLiteDatabase.openDatabase("//data/data/com.appspot.wecookbob/databases/contact.db", null, SQLiteDatabase.OPEN_READONLY);
+			dbForCheck.close();
+		} catch (SQLiteException e) {
+		}
+		return dbForCheck != null;
 	}
-	
-    public void showList() {
-    	helper = new MySQLiteOpenHelper(DisplayAddFriendActivity.this,
-                "contact.db",
-                null,
-                1);
-	    db = helper.getReadableDatabase();
-        Cursor c = db.query("contact", null, null, null, null, null, null);
-        
-        ArrayList<String> arrayList = new ArrayList<String>();
-        
-        while (c.moveToNext()) {
-            int _id = c.getInt(c.getColumnIndex("_id"));
-            String username = c.getString(c.getColumnIndex("username"));
-            String mobile = c.getString(c.getColumnIndex("mobile"));
-            arrayList.add(username);
-            Log.i("db", "id: " + _id + ", username : " + username + ", mobile : " + mobile);
-        }
-	    
-	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-	    
-	    ListView list;
-	    list = (ListView)findViewById(R.id.FriendsToInvitelistView);
-	    list.setAdapter(adapter);
+	private void showList() {
+		helper = new MySQLiteOpenHelper(DisplayAddFriendActivity.this, "contact.db", null, 1);
+		db = helper.getReadableDatabase();
+		Cursor cursor = db.query("contact", null, null, null, null, null, null);
+		ArrayList<String> userNameArray = new ArrayList<String>();
+		while (cursor.moveToNext()) {
+			int _id = cursor.getInt(cursor.getColumnIndex("_id"));
+			String userName = cursor.getString(cursor.getColumnIndex("username"));
+			String mobile = cursor.getString(cursor.getColumnIndex("mobile"));
+			userNameArray.add(userName);
+			Log.i("db", "id: " + _id + ", username : " + userName + ", mobile : " + mobile);
+		}
+	    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, userNameArray);
+	    inviteListView.setAdapter(adapter);
     }
 	
 	@Override

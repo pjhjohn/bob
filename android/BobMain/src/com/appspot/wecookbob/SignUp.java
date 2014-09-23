@@ -68,7 +68,6 @@ public class SignUp extends Activity {
 	        	if(v==findViewById(R.id.btn_signup_complete)) vf_signup_phonecheck.setDisplayedChild(vf_signup_phonecheck.indexOfChild(findViewById(R.id.vf_certification)));
 	        	else vf_signup_phonecheck.stopFlipping();
 	        case R.id.btn_certificate : 
-	        	String phoneNumber = ((EditText) findViewById(R.id.enter_phonenumber)).getText();
 	        	Toast.makeText(SignUp.this, "�몄쬆���꾨즺�섏뿀�듬땲���뱀� �ㅼ떆 �낅젰�댁＜�몄슂", Toast.LENGTH_SHORT).show();
 		    	showBobMain(v);
 		    	break;
