@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	android:gravity="center_horizontal"
+	android:background="#FF6F48"
+   >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="284dp"
+        android:layout_height="241dp"
+        android:layout_marginTop="70dip"
+        android:src="@drawable/signup" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal" 
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+			android:layout_marginTop="20dip" 
+			android:orientation="horizontal"
+			android:gravity="center_horizontal" 
+			 
+            >
+
+            <Button
+                android:id="@+id/btn_login"
+				android:background="#FFFFFF" 
+                android:layout_width="95dip"
+                android:layout_height="wrap_content"
+				android:onClick="showLogInFormat" 
+                android:text="로 그 인" />
+
+            <Button
+                android:id="@+id/btn_signup"
+				android:background="#FFFFFF" 
+                android:layout_width="95dip"
+                android:layout_height="wrap_content"
+				android:layout_marginLeft="10dip"
+				android:onClick="showSignUpFormat"
+                android:text="가 입"
+                />
+            
+        </LinearLayout>
+
+        <ViewFlipper
+	        android:id="@+id/viewflipper"
+	        android:layout_width="match_parent"
+	        android:layout_height="fill_parent" 
+	        
+	        >
+            
+	        <LinearLayout
+	            android:id="@+id/vf_login"
+	            android:layout_width="fill_parent"
+	            android:layout_height="match_parent" 
+				android:orientation="vertical"
+				android:gravity="center_horizontal"
+				>
+				
+				<EditText 
+				    android:id="@+id/enterId" 
+				    android:layout_width="100pt" 
+				    android:layout_height="wrap_content" 
+				    android:layout_marginTop="10dip" 
+				    android:background="#99FFFFFF" 
+				    android:ems="10" 
+				    android:hint="@string/user_id" 
+				    android:padding="10dip" 
+				    android:singleLine="true" />
+				
+				<EditText 
+				    android:id="@+id/enterPass" 
+				    android:layout_width="100pt" 
+				    android:layout_height="wrap_content" 
+				    android:layout_marginTop="5dip" 
+				    android:background="#99FFFFFF" 
+				    android:ems="10" 
+				    android:hint="@string/password" 
+				    android:inputType="phone" 
+				    android:padding="10dip" 
+				    android:singleLine="true" />
+				
+				<Button 
+				    android:id="@+id/loginBtn" 
+				    android:layout_width="100pt" 
+				    android:layout_height="wrap_content" 
+				    android:layout_marginTop="10dip" 
+				    android:background="#FFFFFF" 
+				    android:onClick="showBobMain" 
+				    android:padding="10dip" 
+				    android:text="@string/start_bob" 
+				    android:textSize="11pt" />
+	        
+	        </LinearLayout>
+
+ 	        <LinearLayout
+ 	            android:id="@+id/vf_signup"
+	            android:layout_width="fill_parent"
+	            android:layout_height="match_parent"
+				android:orientation="vertical"
+				android:gravity="center_horizontal"
+				>
+				
+				<EditText 
+				    android:id="@+id/signUpenterId" 
+				    android:layout_width="100pt" 
+				    android:layout_height="wrap_content" 
+				    android:layout_marginTop="10dip" 
+				    android:background="#99FFFFFF" 
+				    android:ems="10" 
+				    android:hint="@string/user_id" 
+				    android:padding="10dip" 
+				    android:singleLine="true" />
+				
+				<EditText 
+				    android:id="@+id/signUpEnterPass" 
+				    android:layout_width="100pt" 
+				    android:layout_height="wrap_content" 
+				    android:layout_marginTop="5dip" 
+				    android:background="#99FFFFFF" 
+				    android:ems="10" 
+				    android:hint="@string/password" 
+				    android:padding="10dip" 
+				    android:singleLine="true" />
+				
+				<EditText 
+				    android:id="@+id/signUpEnterPassAgain" 
+				    android:layout_width="100pt" 
+				    android:layout_height="wrap_content" 
+				    android:layout_marginTop="5dip" 
+				    android:background="#99FFFFFF" 
+				    android:ems="10" 
+				    android:hint="@string/password_check" 
+				    android:padding="10dip" 
+				    android:singleLine="true" />
+				
+				<Button 
+				    android:id="@+id/signUpBtn" 
+				    android:layout_width="100pt" 
+				    android:layout_height="wrap_content" 
+				    android:layout_marginTop="10dip" 
+				    android:background="#FFFFFF" 
+				    android:onClick="signUp" 
+				    android:padding="10dip" 
+				    android:text="@string/sign_up_complete" 
+				    android:textSize="11pt" />
+	        </LinearLayout>
+
+        </ViewFlipper>
+	</LinearLayout>
+</LinearLayout>

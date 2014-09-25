@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.appspot.wecookbob.DisplayAddFriendActivity" >
+
+    <LinearLayout
+        android:id="@+id/firstBobList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_list_label" >
+
+        <TextView
+            android:id="@+id/firstBobListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="3dip"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.5"
+            android:text="@string/send_first_bob"
+            android:textColor="#90000000"
+            android:textSize="8pt" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/firstBobListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dip" >
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/friendsToInviteList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_list_label" >
+
+        <TextView
+            android:id="@+id/friendsToInviteListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="3dip"
+            android:layout_marginTop="10dip"
+            android:layout_weight="0.5"
+            android:text="@string/friends_to_invite"
+            android:textColor="#90000000"
+            android:textSize="8pt" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/friendsToInviteListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
+</RelativeLayout>
