@@ -4,6 +4,7 @@ public class Contact {
 	String phoneNumber;
 	String userName;
 	String userId;
+	boolean hasLog;
 	
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -22,5 +23,11 @@ public class Contact {
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	public boolean getHasLog() {
+		return hasLog;
+	}
+	public void setHasLog(boolean hasLog) {
+		this.hasLog = hasLog;
 	}
 }

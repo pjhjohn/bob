@@ -18,8 +18,8 @@ public class ContactsSQLiteOpenHelper extends SQLiteOpenHelper {
 	                "_id integer primary key autoincrement, " +
 	                "userName text, " +
 	                "phoneNumber text, " +
-	                "isUser boolean, " +
-	                "userId string);";
+	                "userId string, " +
+	                "hasLog boolean);";
 	        db.execSQL(sql);
 	    }
 
