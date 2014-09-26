@@ -6,7 +6,7 @@
 ___/ YOUR GOOGLE APPENGINE FOLDER PATH \__________________________________________________
                                                                                        '''
 
-GOOGLE_APPENGINE_PATH = "C:\\Program Files (x86)\\Google\\google_appengine"
+GOOGLE_APPENGINE_PATH = "C:\\Program Files\\Google\\google_appengine"
 MODE = 'UPDATE'
 
 '''

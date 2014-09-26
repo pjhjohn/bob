@@ -17,27 +17,42 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class RequestForm extends AsyncTask<String, Void, String> {
-	private final OnResponse caller;
-	private String endpoint;
-	private ArrayList<NameValuePair> pairOfNameValue;
+public class PostRequestForm extends AsyncTask<String, Void, String> {
+	private final OnResponse receiver;
+	private final String endpoint;
+	private ArrayList<NameValuePair> nameValueList;
 	private HttpClient client;
 	private HttpPost request;
 	
-	public RequestForm(OnResponse caller) {
-		this.caller = caller;
-		this.pairOfNameValue = new ArrayList<NameValuePair>();
-		this.endpoint = "";
-		build();
+	public static interface OnResponse {
+		void onResponse(String responseBody);
 	}
-	
-	public void add(String name, String value) {
-		this.pairOfNameValue.add(new BasicNameValuePair(name, value));
-	}
-	
-	public void sendTo(String endpoint) {
+
+	public PostRequestForm(OnResponse receiver, String endpoint) {
+		this.nameValueList = new ArrayList<NameValuePair>();
+		this.receiver = receiver;
 		this.endpoint = endpoint;
-		build();
+		this.clear();
+	}
+
+	public void clear() {
+		this.nameValueList = new ArrayList<NameValuePair>();
+	}
+	
+	public void put(String name, String value) {
+		int indexToRemove = -1;
+		for(int i = 0; i < nameValueList.size(); i++) {
+			if(name == nameValueList.get(i).getName()) {
+				indexToRemove = i;
+				break;
+			}
+		}
+		if(indexToRemove >= 0) this.nameValueList.remove(indexToRemove);
+		this.nameValueList.add(new BasicNameValuePair(name, value));
+	}
+
+	public void submit() {
+		this.build();
 		this.execute();
 	}
 	
@@ -46,7 +61,7 @@ public class RequestForm extends AsyncTask<String, Void, String> {
 		this.request = new HttpPost(this.endpoint);
 		// Encode for POST Request
 		try {
-			this.request.setEntity(new UrlEncodedFormEntity(pairOfNameValue));
+			this.request.setEntity(new UrlEncodedFormEntity(nameValueList));
 		} catch(UnsupportedEncodingException e) {
 			Log.e(getClass().toString(), e.getMessage());
 		}
@@ -68,6 +83,6 @@ public class RequestForm extends AsyncTask<String, Void, String> {
 	
 	@Override
 	protected void onPostExecute(String response) {
-		this.caller.onResponse(response);
+		this.receiver.onResponse(response);
 	}
 }
