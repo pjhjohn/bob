@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.appspot.wecookbob"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+    
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    
+    <permission android:name="com.appspot.wecookbob.permission.C2D_MESSAGE"
+        		android:protectionLevel="signature" />
+    <uses-permission android:name="com.appspot.wecookbob.permission.C2D_MESSAGE" />
+    
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+	<uses-permission android:name="android.permission.INTERNET" /> 
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/bob_logo"
+        android:label="@string/app_name"
+        android:theme="@style/CustomActionBarTheme" >
+    <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver"
+	    	android:permission="com.google.android.c2dm.permission.SEND" >
+	  <intent-filter>
+	    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+	    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+	    <category android:name="com.appspot.wecookbob" />
+	  </intent-filter>	
+	</receiver>
+	
+	<service android:name=".GCMIntentService" />
+	<meta-data
+    android:name="com.google.android.gms.version"
+    android:value="@integer/google_play_services_version" />
+        <activity
+            android:name="com.appspot.wecookbob.MainActivity"
+            android:label="@string/bob" 
+            android:parentActivityName="com.appspot.wecookbob.SignUpActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appspot.wecookbob.SignUp" />
+            
+        </activity>
+        <activity
+            android:name="com.appspot.wecookbob.ContactsActivity"
+            android:label="@string/bob"
+            android:parentActivityName="com.appspot.wecookbob.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appspot.wecookbob.BobMainActivity" />
+        </activity>
+        <activity
+            android:name="com.appspot.wecookbob.SignUpActivity"
+			android:theme="@style/NoActionBar"
+            android:label="@string/title_activity_sign_up" >
+			<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        
+        </activity>
+    </application>
+
+</manifest>
