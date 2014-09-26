@@ -28,22 +28,6 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 	private static class ElementHolder {
 		public TextView tvUserName;
 	}
-//	@Override
-//	public View getView(int position, View convertView, ViewGroup parent) {
-//		View v = convertView;
-//		ElementHolder holder = new ElementHolder();
-//		
-//		if (convertView == null) {
-//			v = inflater.inflate(this.layoutResourceID, null);
-//			TextView tv = (TextView) v.findViewById(this.textviewResourceID);
-//			holder.tvUserName = tv;
-//			v.setTag(holder);
-//		} else holder = (ElementHolder) v.getTag();
-//		ContactUser user = data.get(position);
-//		holder.tvUserName.setText(user.getName());
-//		
-//		return v;
-//	}
 	
 	@Override
 	public View getView(int position, View oldView, ViewGroup parentView) {
