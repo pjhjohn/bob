@@ -91,7 +91,7 @@
                 
 	</LinearLayout>
 		<ListView
-		android:id="@+id/FirendsAlreadyAddedlistView"
+		android:id="@+id/lv_bob_log"
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"></ListView>
 	    
