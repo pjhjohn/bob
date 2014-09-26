@@ -17,42 +17,27 @@ import org.apache.http.util.EntityUtils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class PostRequestForm extends AsyncTask<String, Void, String> {
-	private final OnResponse receiver;
-	private final String endpoint;
-	private ArrayList<NameValuePair> nameValueList;
+public class RequestForm extends AsyncTask<String, Void, String> {
+	private final OnResponse caller;
+	private String endpoint;
+	private ArrayList<NameValuePair> pairOfNameValue;
 	private HttpClient client;
 	private HttpPost request;
 	
-	public static interface OnResponse {
-		void onResponse(String responseBody);
-	}
-
-	public PostRequestForm(OnResponse receiver, String endpoint) {
-		this.nameValueList = new ArrayList<NameValuePair>();
-		this.receiver = receiver;
-		this.endpoint = endpoint;
-		this.clear();
-	}
-
-	public void clear() {
-		this.nameValueList = new ArrayList<NameValuePair>();
+	public RequestForm(OnResponse caller) {
+		this.caller = caller;
+		this.pairOfNameValue = new ArrayList<NameValuePair>();
+		this.endpoint = "";
+		build();
 	}
 	
-	public void put(String name, String value) {
-		int indexToRemove = -1;
-		for(int i = 0; i < nameValueList.size(); i++) {
-			if(name == nameValueList.get(i).getName()) {
-				indexToRemove = i;
-				break;
-			}
-		}
-		if(indexToRemove >= 0) this.nameValueList.remove(indexToRemove);
-		this.nameValueList.add(new BasicNameValuePair(name, value));
+	public void add(String name, String value) {
+		this.pairOfNameValue.add(new BasicNameValuePair(name, value));
 	}
-
-	public void submit() {
-		this.build();
+	
+	public void sendTo(String endpoint) {
+		this.endpoint = endpoint;
+		build();
 		this.execute();
 	}
 	
@@ -61,7 +46,7 @@ public class PostRequestForm extends AsyncTask<String, Void, String> {
 		this.request = new HttpPost(this.endpoint);
 		// Encode for POST Request
 		try {
-			this.request.setEntity(new UrlEncodedFormEntity(nameValueList));
+			this.request.setEntity(new UrlEncodedFormEntity(pairOfNameValue));
 		} catch(UnsupportedEncodingException e) {
 			Log.e(getClass().toString(), e.getMessage());
 		}
@@ -83,6 +68,6 @@ public class PostRequestForm extends AsyncTask<String, Void, String> {
 	
 	@Override
 	protected void onPostExecute(String response) {
-		this.receiver.onResponse(response);
+		this.caller.onResponse(response);
 	}
 }
