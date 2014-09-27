@@ -89,7 +89,6 @@
 					    android:background="#99FFFFFF" 
 					    android:ems="10" 
 					    android:hint="@string/password" 
-					    android:inputType="phone" 
 					    android:padding="10dip" 
 					    android:singleLine="true" />
 					

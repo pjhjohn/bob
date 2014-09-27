@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -39,10 +40,9 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import com.appspot.wecookbob.lib.PostRequestForm;
-import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 
 public class MainActivity extends ActionBarActivity implements OnResponse {
-	Switch sw;
+	Switch sw1, sw2;
 	SQLiteDatabase bobLogDb;
 	BobLogSQLiteOpenHelper bobLogHelper;
 
@@ -75,9 +75,9 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.request_time, R.id.btn_bob);
 		BobLogListView.setAdapter(BobLogAdapter);
 
-		sw = (Switch) findViewById(R.id.alarm_switch);
-		sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+		sw1 = (Switch) findViewById(R.id.alarm_switch);
+		sw1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean ischecked) {
@@ -89,14 +89,13 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					Toast.makeText(getApplicationContext(), "알림 ㄴㄴ",
 							Toast.LENGTH_LONG).show();
 					PreferenceUtil.instance(getApplicationContext()).putGetAlarm("false");
-					
 				}
 			}
 		});
 
 
-		sw = (Switch) findViewById(R.id.status_switch);
-		sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		sw2 = (Switch) findViewById(R.id.status_switch);
+		sw2.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,

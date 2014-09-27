@@ -17,6 +17,7 @@ import com.appspot.wecookbob.R;
 import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.lib.PreferenceUtil;
 
 public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 	private LayoutInflater inflater;
@@ -83,10 +84,11 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 				Cursor c = contactsDb.rawQuery("SELECT * FROM contacts WHERE userName = ?", userName);
 				c.moveToFirst();
 				String phoneNumber = c.getString(c.getColumnIndex("phoneNumber"));
+				String senderId = PreferenceUtil.instance(getContext()).userId();
 				String userId = c.getString(c.getColumnIndex("userId"));
 				if (btnID == R.id.btn_send_first_bob) {
 					PostRequestForm form = new PostRequestForm(ContactUserListviewAdapter.this.responseListener,"http://wecookbob.appspot.com/bob");
-					form.put("sender-user-id", "dongwoooo");
+					form.put("sender-user-id", senderId);
 					form.put("receiver-user-id", userId);
 					form.submit();
 					Toast.makeText(myContext, userId + "에게 밥을 보냅니다", Toast.LENGTH_LONG).show();

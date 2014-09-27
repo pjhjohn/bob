@@ -1,5 +1,8 @@
 package com.appspot.wecookbob;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.*;
 import android.app.*;
 import android.content.*;
@@ -17,8 +20,9 @@ import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 
 
 public class SignUpActivity extends Activity implements OnResponse {
-	Button btnLogIn, btnSignUp, btnSignUpComplete, loginBtn;
+	Button btnLogIn, btnSignUp, btnSignUpComplete, loginBtn, btnCertificate, btnGetCertificationNumber;
 	ViewFlipper vf_login_signup, vf_signup_phonecheck;
+	LinearLayout vf_certification, vf_login;
 	Animation slide_in_left, slide_out_right;
 
 	@Override
@@ -31,9 +35,14 @@ public class SignUpActivity extends Activity implements OnResponse {
 		btnSignUp = (Button) findViewById(R.id.btn_signup);
 		btnSignUpComplete = (Button) findViewById(R.id.btn_signup_complete);
 		loginBtn = (Button) findViewById(R.id.loginBtn);
+		btnCertificate = (Button) findViewById(R.id.btn_certificate);
+		btnGetCertificationNumber = (Button) findViewById(R.id.btn_get_certification_number);
 		
 		vf_login_signup = (ViewFlipper) findViewById(R.id.vf_login_signup);
 		vf_signup_phonecheck = (ViewFlipper) findViewById(R.id.vf_signup_phonecheck);
+		
+		vf_certification = (LinearLayout) findViewById(R.id.vf_certification);
+		vf_login = (LinearLayout) findViewById(R.id.vf_login);
 	 
         slide_in_left = AnimationUtils.loadAnimation(this,
                 android.R.anim.slide_in_left);
@@ -51,6 +60,8 @@ public class SignUpActivity extends Activity implements OnResponse {
         btnSignUp.setOnClickListener(btnClickListener);
         btnSignUpComplete.setOnClickListener(btnClickListener);
         loginBtn.setOnClickListener(btnClickListener);
+        btnCertificate.setOnClickListener(btnClickListener);
+        btnGetCertificationNumber.setOnClickListener(btnClickListener);
 
     }
 	
@@ -79,10 +90,14 @@ public class SignUpActivity extends Activity implements OnResponse {
 	    	EditText signUpPass = (EditText) findViewById(R.id.signUpEnterPass);
 	    	EditText signUpPassAgain = (EditText) findViewById(R.id.signUpEnterPassAgain);
 	    	EditText enterId = (EditText) findViewById(R.id.enterId);
+	    	EditText enterPass = (EditText) findViewById(R.id.enterPass);
+	    	EditText enterPhonenumber = (EditText) findViewById(R.id.enter_phonenumber);
 	    	String id = signUpId.getText().toString();
 	    	String pw = signUpPass.getText().toString();
 	    	String pwck = signUpPassAgain.getText().toString();
 	    	String loginId = enterId.getText().toString();
+	    	String loginPw = enterPass.getText().toString();
+	    	String mobile = enterPhonenumber.getText().toString();
 	        switch (v.getId()) {
 	        case R.id.btn_login:
 	        	if(v==findViewById(R.id.btn_login))
@@ -105,13 +120,12 @@ public class SignUpActivity extends Activity implements OnResponse {
 	        case R.id.btn_signup_complete:
 	        	if(v==findViewById(R.id.btn_signup_complete))
 	        	{
-	        		if (pw.equals(pwck)) {
-	        			System.out.println(pw);
-	        			PostRequestForm form = new PostRequestForm(SignUpActivity.this,"http://wecookbob.appspot.com/contacts");
-						form.put("sign-up-id", id);
-						form.put("sign-up-pw", pw);
+	        		if (pw.equals(pwck)&!pw.equals(null)&!pw.equals("")) {
+						PreferenceUtil.instance(getApplicationContext()).putSignupId(id);
+						PreferenceUtil.instance(getApplicationContext()).putSignupPw(pw);
+	        			PostRequestForm form = new PostRequestForm(SignUpActivity.this,"http://wecookbob.appspot.com/user_id_check");
+						form.put("signup-id", id);
 						form.submit();
-						vf_signup_phonecheck.setDisplayedChild(vf_signup_phonecheck.indexOfChild(findViewById(R.id.vf_certification)));
 					}
 	        		else Toast.makeText(SignUpActivity.this, "비밀번호를 확인하십시오",
 	                        Toast.LENGTH_SHORT).show();
@@ -121,8 +135,36 @@ public class SignUpActivity extends Activity implements OnResponse {
 	        case R.id.loginBtn:
 	        	if(v==findViewById(R.id.loginBtn))
 	        	{
-	        		storeUserId(loginId);
-	        		showBobMain(v);
+	        		PostRequestForm form = new PostRequestForm(SignUpActivity.this, "http://wecookbob.appspot.com/login");
+	        		form.put("user-id",loginId);
+	        		form.put("password", loginPw);
+	        		form.submit();
+	        	}
+	        case R.id.btn_get_certification_number:
+	        	if(v==findViewById(R.id.btn_get_certification_number))
+	        	{
+	        		PostRequestForm form = new PostRequestForm(SignUpActivity.this, "http://wecookbob.appspot.com/mobile_check");
+	        		form.put("mobile", mobile);
+	        		form.submit();
+	        	}
+	        case R.id.btn_certificate:
+	        	if(v==findViewById(R.id.btn_certificate))
+	        	{
+	        		if(!PreferenceUtil.instance(getApplicationContext()).signupMobile().equals(null))
+	        		{
+	        			System.out.println("GO");
+	        			PostRequestForm form = new PostRequestForm(SignUpActivity.this, "http://wecookbob.appspot.com/signup");
+						form.put("signup-id", PreferenceUtil.instance(getApplicationContext()).signupId());
+						form.put("signup-pw", PreferenceUtil.instance(getApplicationContext()).signupPw());
+						form.put("signup-mobile", PreferenceUtil.instance(getApplicationContext()).signupMobile());
+						System.out.println(form);
+						form.submit();
+	        		}
+	        		else
+	        		{
+	        			Toast.makeText(SignUpActivity.this, "전화번호를 인증받지 않았습니다",
+		                        Toast.LENGTH_SHORT).show();
+	        		}
 	        	}
 	        default:
 	        break;
@@ -163,6 +205,72 @@ public class SignUpActivity extends Activity implements OnResponse {
 	@Override
 	public void onResponse(String responseBody) {
 		// TODO Auto-generated method stub
+		JSONObject jsonResponse;
+		try {
+			jsonResponse = new JSONObject(responseBody);
+			String responseType = jsonResponse.getString("type");
+			if(responseType.equals("user-id-check"))
+			{
+				System.out.println(jsonResponse);
+				if(jsonResponse.getBoolean("available"))
+				{
+					vf_signup_phonecheck.setDisplayedChild(vf_signup_phonecheck.indexOfChild(findViewById(R.id.vf_certification)));
+				}
+				else
+				{
+					Toast.makeText(SignUpActivity.this, "사용중인 아이디입니다",
+	                        Toast.LENGTH_SHORT).show();
+				}
+			}
+			else if(responseType.equals("mobile-check"))
+			{
+				System.out.println(jsonResponse);
+				if(jsonResponse.getBoolean("available"))
+				{
+					PreferenceUtil.instance(getApplicationContext()).putSignupMobile(jsonResponse.getString("mobile"));
+					Toast.makeText(SignUpActivity.this, "사용 가능한 전화번호입니다",
+	                        Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(SignUpActivity.this, "등록된 전화번호입니다",
+	                        Toast.LENGTH_SHORT).show();
+				}
+			}
+			else if(responseType.equals("signup-check"))
+			{
+				System.out.println(jsonResponse);
+				if(jsonResponse.getBoolean("success"))
+				{
+					storeUserId(jsonResponse.getString("signup-id"));
+					showBobMain(vf_certification);
+				}
+				else
+				{
+					Toast.makeText(SignUpActivity.this, "회원가입에 실패했습니다",
+	                        Toast.LENGTH_SHORT).show();
+				}
+			}
+			else if(responseType.equals("login-check"))
+			{
+				System.out.println(jsonResponse);
+				if(jsonResponse.getBoolean("success"))
+				{
+					storeUserId(jsonResponse.getString("user-id"));
+					showBobMain(vf_login);
+				}
+				else
+				{
+					Toast.makeText(SignUpActivity.this, "잘못된 아이디 또는 비밀번호입니다",
+	                        Toast.LENGTH_SHORT).show();
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		
 		
 	}
 }
