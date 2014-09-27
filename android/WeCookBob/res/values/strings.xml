@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Bob</string>
+    <string name="app_name">BOB</string>
     <string name="bob">BOB</string>
     <string name="action_settings">Settings</string>
     <string name="state">상태</string>

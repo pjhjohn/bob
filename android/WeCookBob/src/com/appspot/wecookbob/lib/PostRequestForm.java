@@ -83,6 +83,6 @@ public class PostRequestForm extends AsyncTask<String, Void, String> {
 	
 	@Override
 	protected void onPostExecute(String response) {
-		this.receiver.onResponse(response);
+		if (this.receiver != null) this.receiver.onResponse(response);
 	}
 }
