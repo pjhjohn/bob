@@ -56,12 +56,12 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	private GoogleCloudMessaging _gcm;
 	private String _regId;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bob_main);
-
+		
 		long bobRequestTime = System.currentTimeMillis();
 
 		// build listview for boblog
@@ -72,7 +72,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		bobLogArray.add(new BobLog ("hongJ", "홍지호호할아버지", NotificationType.RECEIVED, bobRequestTime-1000*60*5));
 		bobLogArray.add(new BobLog ("namdy", "남디", NotificationType.RECEIVED, bobRequestTime-1000*60*1));
 		bobLogArray.add(new BobLog ("parkJ", "박주노주노", NotificationType.RECEIVED, bobRequestTime-1000*60*5));
-		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.request_time, R.id.btn_bob);
+		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.btn_bob);
 		BobLogListView.setAdapter(BobLogAdapter);
 
 		sw = (Switch) findViewById(R.id.alarm_switch);
@@ -119,11 +119,10 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 			
 			
 		});
-		
 		//다이얼로그를 띄워줌.
         SignUpDialog SUDialog = new SignUpDialog();
     	SUDialog.show(getFragmentManager(), "Mytag");
-		
+    
 		//      if (checkDataBase()) showList();
 
 		// google play service가 사용가능한가

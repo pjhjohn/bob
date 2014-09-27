@@ -20,7 +20,7 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> {
 	private Context context;
 	ArrayList<BobLog> data;
 	
-	public BobLogListviewAdapter(Context context, ArrayList<BobLog> data, int layoutResID, int textViewResId1, int textViewResId2) {
+	public BobLogListviewAdapter(Context context, ArrayList<BobLog> data, int layoutResID, int textViewResId1) {
 		super(context, 0, data);
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.data = data;
@@ -42,9 +42,9 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> {
 
 		if (elementData != null) {
 			TextView textview1 = (TextView) view.findViewById(R.id.bobtner_name);
-			TextView textview2 = (TextView) view.findViewById(R.id.request_time);
+//			TextView textview2 = (TextView) view.findViewById(R.id.request_time);
 			textview1.setText(elementData.getBobtnerName());
-			textview2.setText(elementData.getBobRequestTime()+"");
+//			textview2.setText(elementData.getBobRequestTime()+"");
 		}
 		
 

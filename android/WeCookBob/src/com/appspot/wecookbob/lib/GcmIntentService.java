@@ -1,6 +1,5 @@
 package com.appspot.wecookbob.lib;
 
-import android.*;
 import android.app.*;
 import android.content.*;
 import android.os.*;
@@ -8,6 +7,7 @@ import android.support.v4.app.*;
 import android.util.*;
 
 import com.appspot.wecookbob.*;
+import com.google.android.gms.gcm.*;
 
 public class GcmIntentService extends IntentService
 {
