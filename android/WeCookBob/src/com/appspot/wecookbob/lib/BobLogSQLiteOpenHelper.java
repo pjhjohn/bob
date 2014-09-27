@@ -19,8 +19,8 @@ public class BobLogSQLiteOpenHelper extends SQLiteOpenHelper {
 	                "bobtnerId text, " +
 	                "bobtnerName text, " +
 	                "bobtnerPhoneNumber text, " +
-	                "notificationType integer, " +
-	                "time text);";
+	                "notificationType string, " +
+	                "bobRequestTime text);";
 	        db.execSQL(sql);
 	    }
 	 

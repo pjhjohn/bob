@@ -1,7 +1,14 @@
 package com.appspot.wecookbob.contact;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,13 +19,12 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appspot.wecookbob.ContactsActivity;
 import com.appspot.wecookbob.R;
 import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.PostRequestForm;
 
-public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
+public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> implements PostRequestForm.OnResponse{
 	private LayoutInflater inflater;
 	private final int layoutResourceID;
 	private final int textviewResourceID;
@@ -30,7 +36,7 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 	BobLogSQLiteOpenHelper bobLogHelper;
 	ArrayList<ContactUser> data;
 	Context myContext;
-	
+
 	public ContactUserListviewAdapter(Context context, ArrayList<ContactUser> data, int layoutResID, int textViewResId, int btnResId) {
 		super(context, 0, data);
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,22 +45,12 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 		this.btnResourceID = btnResId;
 		this.data = data;
 		this.myContext = context;
-		this.responseListener = null;
 	}
-	public ContactUserListviewAdapter(Context context, ArrayList<ContactUser> data, int layoutResID, int textViewResId, int btnResId, PostRequestForm.OnResponse responselistener) {
-		super(context, 0, data);
-		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.layoutResourceID = layoutResID;
-		this.textviewResourceID = textViewResId;
-		this.btnResourceID = btnResId;
-		this.data = data;
-		this.myContext = context;
-		this.responseListener = responselistener;
-	}
+	
 	private static class ElementHolder {
 		public TextView tvUserName;
 	}
-	
+
 	@Override
 	public View getView(int position, View oldView, ViewGroup parentView) {
 		View view = null;
@@ -68,9 +64,9 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 			TextView textview = (TextView) view.findViewById(this.textviewResourceID);
 			textview.setText(elementData.getName());
 		}
-		
+
 		final int btnID = this.btnResourceID;
-		
+
 		view.findViewById(btnID).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v) {
@@ -85,7 +81,7 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 				String phoneNumber = c.getString(c.getColumnIndex("phoneNumber"));
 				String userId = c.getString(c.getColumnIndex("userId"));
 				if (btnID == R.id.btn_send_first_bob) {
-					PostRequestForm form = new PostRequestForm(ContactUserListviewAdapter.this.responseListener,"http://wecookbob.appspot.com/bob");
+					PostRequestForm form = new PostRequestForm(ContactUserListviewAdapter.this,"http://wecookbob.appspot.com/bob");
 					form.put("sender-user-id", "dongwoooo");
 					form.put("receiver-user-id", userId);
 					form.submit();
@@ -97,5 +93,57 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> {
 			}
 		});
 		return view;
+	}
+	public void onResponse(String responseBody) {
+		System.out.println(System.currentTimeMillis());
+		System.out.println(responseBody);
+		JSONObject jsonResponse;
+		try {
+			jsonResponse = new JSONObject(responseBody);
+			boolean success = jsonResponse.getBoolean("success");
+			String stringDate = jsonResponse.getString("bob-request-time");
+			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date d = (Date) f.parse(stringDate);
+			long bobRequestTime = d.getTime();
+			String bobtnerId = jsonResponse.getString("bobtner-id");
+			String bobtnerName = jsonResponse.getString("bobtner-name");
+			BobLog.NotificationType notificationType = null;
+			try {
+				notificationType = BobLog.stringToNotificationType(jsonResponse.getString("notification-type"));
+			} catch (Exception e) {
+				// Bad Data Response
+			}
+			if (success) {
+				System.out.println("success");
+				bobLogHelper = new BobLogSQLiteOpenHelper(this.myContext,
+						"boblog.db",
+						null,
+						1);
+				bobLogDb = bobLogHelper.getWritableDatabase();
+				ContentValues bobLogValues = new ContentValues();
+				bobLogValues.put("bobRequestTime", bobRequestTime);
+				bobLogValues.put("bobtnerId", bobtnerId);
+				bobLogValues.put("bobtnerName", bobtnerName);
+				bobLogValues.put("notificationType", BobLog.NotificationType.SENT.toString());
+				bobLogDb.insert("boblog", null, bobLogValues);
+				bobLogDb.close();contactsDb = contactsHelper.getWritableDatabase();
+				ContentValues updateValues = new ContentValues();
+				updateValues.put("hasLog", true);
+				contactsDb.update("contacts", updateValues, "userId=?", new String[]{bobtnerId});
+				this.notifyDataSetChanged();
+				Toast.makeText(this.myContext, "상대방에게 밥을 보냈습니다",
+						Toast.LENGTH_SHORT).show();
+			}
+			else if (success) {
+				Toast.makeText(this.myContext, "상대방이 배가 부릅니다",
+						Toast.LENGTH_SHORT).show();
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 }

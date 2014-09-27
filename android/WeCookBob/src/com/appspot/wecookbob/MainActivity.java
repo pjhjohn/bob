@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
@@ -29,9 +30,12 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.appspot.wecookbob.contact.BobLog;
+import com.appspot.wecookbob.contact.ContactUser;
+import com.appspot.wecookbob.contact.ContactUserListviewAdapter;
 import com.appspot.wecookbob.contact.BobLog.NotificationType;
 import com.appspot.wecookbob.contact.BobLogListviewAdapter;
 import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
+import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 import com.appspot.wecookbob.lib.PreferenceUtil;
 import com.google.android.gms.common.ConnectionResult;
@@ -62,18 +66,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bob_main);
 
-		long bobRequestTime = System.currentTimeMillis();
-
-		// build listview for boblog
-		BobLogListView = (ListView) findViewById(R.id.lv_bob_log);
-		bobLogArray = new ArrayList<BobLog>();
-		bobLogArray.add(new BobLog ("alex", "알렉스", NotificationType.RECEIVED, bobRequestTime-1000*60*5));
-		bobLogArray.add(new BobLog ("nose", "노승은", NotificationType.RECEIVED, bobRequestTime-1000*60*1));
-		bobLogArray.add(new BobLog ("hongJ", "홍지호호할아버지", NotificationType.RECEIVED, bobRequestTime-1000*60*5));
-		bobLogArray.add(new BobLog ("namdy", "남디", NotificationType.RECEIVED, bobRequestTime-1000*60*1));
-		bobLogArray.add(new BobLog ("parkJ", "박주노주노", NotificationType.RECEIVED, bobRequestTime-1000*60*5));
-		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.request_time, R.id.btn_bob);
-		BobLogListView.setAdapter(BobLogAdapter);
+		showList();
 
 		sw = (Switch) findViewById(R.id.alarm_switch);
 		sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -89,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					Toast.makeText(getApplicationContext(), "알림 ㄴㄴ",
 							Toast.LENGTH_LONG).show();
 					PreferenceUtil.instance(getApplicationContext()).putGetAlarm("false");
-					
+
 				}
 			}
 		});
@@ -107,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_hungry");
 					form.put("user-id", "azulpanda");
 					form.submit();
-					
+
 				} else {
 					Toast.makeText(getApplicationContext(), "배불",
 							Toast.LENGTH_LONG).show();
@@ -116,14 +109,14 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					form.submit();
 				}
 			}
-			
-			
+
+
 		});
-		
+
 		//다이얼로그를 띄워줌.
-        SignUpDialog SUDialog = new SignUpDialog();
-    	SUDialog.show(getFragmentManager(), "Mytag");
-		
+		SignUpDialog SUDialog = new SignUpDialog();
+		SUDialog.show(getFragmentManager(), "Mytag");
+
 		//      if (checkDataBase()) showList();
 
 		// google play service가 사용가능한가
@@ -174,6 +167,31 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void showList() {
+		System.out.println("showlist!");
+		bobLogHelper = new BobLogSQLiteOpenHelper(MainActivity.this,
+				"boblog.db",
+				null,
+				1);
+		bobLogDb = bobLogHelper.getReadableDatabase();
+		Cursor Cursor = bobLogDb.rawQuery("SELECT * FROM boblog", null);
+
+		// build listview for boblog
+		BobLogListView = (ListView) findViewById(R.id.lv_bob_log);
+		bobLogArray = new ArrayList<BobLog>();
+		
+		while (Cursor.moveToNext()) {
+			System.out.println("asdfsa");
+			Long bobRequestTime = Cursor.getLong(Cursor.getColumnIndex("bobRequestTime"));
+			String bobtnerId = Cursor.getString(Cursor.getColumnIndex("bobtnerId"));
+			String bobtnerName = Cursor.getString(Cursor.getColumnIndex("bobtnerName"));
+			BobLog.NotificationType notificationType = Cursor.getString(Cursor.getColumnIndex("notificationType")).equals("sent") ? NotificationType.SENT : NotificationType.RECEIVED;
+			bobLogArray.add(new BobLog (bobtnerId, bobtnerName, notificationType, bobRequestTime));
+		}
+		
+		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.request_time, R.id.btn_bob);
+		BobLogListView.setAdapter(BobLogAdapter);
+	}
 
 	public void showAddFriendTab(View view) {
 		Toast.makeText(MainActivity.this, "애드 프렌드",
@@ -196,50 +214,6 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		}
 		return checkBobLogDb != null ? true : false;
 	}
-
-
-//	public void showList() {
-//		bobLogHelper = new BobLogSQLiteOpenHelper(MainActivity.this,
-//				"boblog.db",
-//				null,
-//				1);
-//		bobLogDb = bobLogHelper.getReadableDatabase();
-//		Cursor contactsCursor = bobLogDb.query("boblog", null, null, null, null, null, null);
-//
-//		// put first bob list here
-//
-//		ArrayList<String> arrayList = new ArrayList<String>();
-//
-//		while (contactsCursor.moveToNext()) {
-//			String userName = contactsCursor.getString(contactsCursor.getColumnIndex("userName"));
-//			arrayList.add(userName);
-//		}
-//
-//		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
-//
-//		ListView list;
-//		list = (ListView)findViewById(R.id.mainFriendsListView);
-//		list.setAdapter(adapter);
-//		list.setChoiceMode(list.CHOICE_MODE_SINGLE);
-//		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//			@Override
-//			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//				ListView list = (ListView) parent;
-//				// TODO 아이템 클릭시에 구현할 내용은 여기에.
-//				String[] userName = { (String)list.getItemAtPosition(position) };
-//				bobLogHelper = new BobLogSQLiteOpenHelper(MainActivity.this,
-//						"contacts.db",
-//						null,
-//						1);
-//				bobLogDb = bobLogHelper.getReadableDatabase();
-//				Cursor c = bobLogDb.rawQuery("SELECT * FROM contacts WHERE userName = ?", userName);
-//				c.moveToFirst();
-//				String bobtnerPhoneNumber = c.getString(c.getColumnIndex("bobtnerPhoneNumber"));
-//				Toast.makeText(MainActivity.this, bobtnerPhoneNumber, Toast.LENGTH_LONG).show();
-//			}
-//		});
-//	}
-
 
 	@Override
 	protected void onNewIntent(Intent intent)

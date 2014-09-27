@@ -1,8 +1,6 @@
 package com.appspot.wecookbob.contact;
 
-import java.util.*;
-
-import com.appspot.wecookbob.*;
+import java.util.Comparator;
 
 public class BobLog {
 	public long bobRequestTime;
@@ -59,4 +57,11 @@ public class BobLog {
 	public long getBobRequestTime() {
 		return this.bobRequestTime;
 	}	
+	
+	// Converter
+	public static NotificationType stringToNotificationType(String type) throws Exception{
+		if(type.toLowerCase().equals("sent")) return NotificationType.SENT;
+		if(type.toLowerCase().equals("received")) return NotificationType.RECEIVED;
+		throw new Exception("Type Not Safe");
+	}
 }
