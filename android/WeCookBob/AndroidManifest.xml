@@ -62,7 +62,7 @@
         <activity
             android:name="com.appspot.wecookbob.SignUpActivity"
 			android:theme="@style/NoActionBar"
-            android:label="@string/title_activity_sign_up" >
+            android:label="@string/app_name" >
 			<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
