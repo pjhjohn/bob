@@ -72,7 +72,9 @@ public class ContactsActivity extends Activity {
 				1);
 		contactsDb = contactsHelper.getReadableDatabase();
 		Cursor contactsCursor = contactsDb.rawQuery("SELECT * FROM contacts WHERE userId IS NULL", null);
-		Cursor firstBobCursor = contactsDb.rawQuery("SELECT * FROM contacts WHERE userId IS NOT NULL", null);	
+		
+		String[] var = { "0" };
+		Cursor firstBobCursor = contactsDb.rawQuery("SELECT * FROM contacts WHERE userId IS NOT NULL AND hasLog = ?", var);	
 
 		// build listview for firstbob
 		firstBobListView = (ListView) findViewById(R.id.lv_first_bob);
@@ -91,9 +93,9 @@ public class ContactsActivity extends Activity {
 			firstBobArray.add(new ContactUser(userName, true));
 		}
 
-		firstBobAdapter = new ContactUserListviewAdapter(this, firstBobArray, R.layout.send_first_bob_list_item, R.id.send_first_bob_friend_name, R.id.btn_send_first_bob, this.sendRequestReceiver);
+		firstBobAdapter = new ContactUserListviewAdapter(this, firstBobArray, R.layout.send_first_bob_list_item, R.id.send_first_bob_friend_name, R.id.btn_send_first_bob);
 		firstBobListView.setAdapter(firstBobAdapter);
-		inviteAdapter = new ContactUserListviewAdapter(this, inviteArray, R.layout.invite_friend_list_item, R.id.invite_friend_name, R.id.btn_invite, this.sendRequestReceiver);
+		inviteAdapter = new ContactUserListviewAdapter(this, inviteArray, R.layout.invite_friend_list_item, R.id.invite_friend_name, R.id.btn_invite);
 		inviteListView.setAdapter(inviteAdapter);
 	}
 
@@ -194,11 +196,10 @@ public class ContactsActivity extends Activity {
 		contactsDb.close();
 	}
 
-	public void update (String userName, String phoneNumber, boolean isUser, String userId) {
+	public void update (String userName, String userId, String phoneNumber, boolean hasLog) {
 		contactsDb = contactsHelper.getWritableDatabase();
-
 		ContentValues values = new ContentValues();
-		values.put("phoneNumber", phoneNumber);
+		values.put("hasLog", true);
 		contactsDb.update("contacts", values, "userName=?", new String[]{userName});
 	}
 
@@ -248,7 +249,6 @@ public class ContactsActivity extends Activity {
 				System.out.println(dataCollection);
 				for (int i = 0; i < dataCollection.length(); i++) {
 					Object userId = dataCollection.get(i);
-					System.out.println(userId);
 					if (!userId.equals(null)) {
 						contactlist.get(i).setUserId(userId.toString());
 						if (checkDataBase("boblog.db")) {
@@ -264,27 +264,6 @@ public class ContactsActivity extends Activity {
 			insert(contactlist);
 			Toast.makeText(ContactsActivity.this, "동기화가 완료되었습니다",
 					Toast.LENGTH_SHORT).show();
-		}
-	};
-
-	public PostRequestForm.OnResponse sendRequestReceiver = new PostRequestForm.OnResponse() {
-		@Override
-		public void onResponse(String responseBody) {
-			if (responseBody.equals("Success")) {
-				bobLogHelper = new BobLogSQLiteOpenHelper(ContactsActivity.this,
-						"boblog.db",
-						null,
-						1);
-				bobLogDb = bobLogHelper.getWritableDatabase();
-				ContentValues bobLogValues = new ContentValues();
-				bobLogValues.put("bobtnerId","asdf");
-				Toast.makeText(ContactsActivity.this, "상대방에게 밥을 보냈습니다",
-						Toast.LENGTH_SHORT).show();
-			}
-			else if (responseBody.equals("Fail")) {
-				Toast.makeText(ContactsActivity.this, "상대방이 배가 부릅니다",
-						Toast.LENGTH_SHORT).show();
-			}
 		}
 	};
 }
