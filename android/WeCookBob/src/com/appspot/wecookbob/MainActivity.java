@@ -60,7 +60,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	private GoogleCloudMessaging _gcm;
 	private String _regId;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -189,7 +189,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 			bobLogArray.add(new BobLog (bobtnerId, bobtnerName, notificationType, bobRequestTime));
 		}
 		
-		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.request_time, R.id.btn_bob);
+		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.btn_bob);
 		BobLogListView.setAdapter(BobLogAdapter);
 	}
 
