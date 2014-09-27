@@ -1,27 +1,23 @@
 package com.appspot.wecookbob.contact;
 
 public class ContactUser {
-	private final int imgResId;
 	private final String userName;
 	private String contactName;
 	private	String customName;
 	private boolean isBobUser;
-	public ContactUser(String userName, int imgResId) {
-		this.imgResId = imgResId;
+	public ContactUser(String userName) {
 		this.userName = userName;
 		this.contactName = null;
 		this.customName = null;
 		this.isBobUser = false;
 	}
-	public ContactUser(String userName, int imgResId, boolean isBobUser) {
-		this.imgResId = imgResId;
+	public ContactUser(String userName, boolean isBobUser) {
 		this.userName = userName;
 		this.contactName = null;
 		this.customName = null;
 		this.isBobUser = isBobUser;
 	}
-	public ContactUser(String userName, int imgResId, boolean isBobUser, String contactName) {
-		this.imgResId = imgResId;
+	public ContactUser(String userName, boolean isBobUser, String contactName) {
 		this.userName = userName;
 		this.contactName = contactName;
 		this.customName = null;
@@ -48,7 +44,4 @@ public class ContactUser {
 	public boolean isBobUser() {
 		return this.isBobUser;
 	}	
-	public int getResourceId() {
-		return this.imgResId;
-	}
 }
