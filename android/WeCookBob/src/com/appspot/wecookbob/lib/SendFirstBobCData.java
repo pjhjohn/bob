@@ -1,6 +1,5 @@
 package com.appspot.wecookbob.lib;
 
-import android.content.Context;
 
 public class SendFirstBobCData {
 	private String send_first_bob_user_name;
