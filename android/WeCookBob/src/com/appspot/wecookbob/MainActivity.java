@@ -110,7 +110,6 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_full");
 					form.put("user-id", "azulpanda");
 					form.submit();
-					storeRegistrationId("APA91bGsugmv7Tw1GKoxA6AJSF2ms_0rVuKr2Ry7zGiCLVRSbhQcP26cv3nnoZSR1vRyqyFiuUWFjS6m6Xb-K8W7orWQSnCRgFpFtDt5kCLnm1ZMZacB_zyh6Ta3k_6JRsL2Fu-lhjCrZTCfbSDQj8cRO1fhfBsLdg");
 				}
 			}
 		});
