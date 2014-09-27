@@ -1,35 +1,22 @@
 package com.appspot.wecookbob;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
-import android.app.Activity;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.*;
+import android.app.*;
+import android.content.*;
+import android.database.*;
+import android.database.sqlite.*;
+import android.net.*;
+import android.os.*;
+import android.provider.*;
+import android.view.*;
+import android.widget.*;
 
-import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.Contact;
-import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.InviteFriendCData;
-import com.appspot.wecookbob.lib.InviteFriendDataAdapter;
-import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.lib.*;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
-import com.appspot.wecookbob.lib.SendFirstBobAdapter;
-import com.appspot.wecookbob.lib.SendFirstBobCData;
 
 public class ContactsActivity extends Activity implements OnResponse {
 	public ArrayList<Contact> contactlist;

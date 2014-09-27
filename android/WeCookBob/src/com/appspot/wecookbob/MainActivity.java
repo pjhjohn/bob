@@ -112,7 +112,13 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					form.submit();
 				}
 			}
+			
+			
 		});
+		
+		//다이얼로그를 띄워줌.
+        SignUpDialog SUDialog = new SignUpDialog();
+    	SUDialog.show(getFragmentManager(), "Mytag");
 		
 		//      if (checkDataBase()) showList();
 
