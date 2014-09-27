@@ -83,9 +83,12 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 				if (ischecked) {
 					Toast.makeText(getApplicationContext(), "알림",
 							Toast.LENGTH_LONG).show();
+					PreferenceUtil.instance(getApplicationContext()).putGetAlarm("true");
 				} else {
 					Toast.makeText(getApplicationContext(), "알림 ㄴㄴ",
 							Toast.LENGTH_LONG).show();
+					PreferenceUtil.instance(getApplicationContext()).putGetAlarm("false");
+					
 				}
 			}
 		});
