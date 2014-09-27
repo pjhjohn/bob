@@ -1,27 +1,23 @@
 package com.appspot.wecookbob;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.*;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
+import android.view.animation.*;
+import android.widget.*;
 
-import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.lib.*;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 
 
 
 
 public class SignUpActivity extends Activity implements OnResponse {
-	Button btnLogIn, btnSignUp, btnSignUpComplete;
+	Button btnLogIn, btnSignUp, btnSignUpComplete, loginBtn;
 	ViewFlipper vf_login_signup, vf_signup_phonecheck;
 	Animation slide_in_left, slide_out_right;
 
@@ -34,6 +30,7 @@ public class SignUpActivity extends Activity implements OnResponse {
 		btnLogIn = (Button) findViewById(R.id.btn_login);
 		btnSignUp = (Button) findViewById(R.id.btn_signup);
 		btnSignUpComplete = (Button) findViewById(R.id.btn_signup_complete);
+		loginBtn = (Button) findViewById(R.id.loginBtn);
 		
 		vf_login_signup = (ViewFlipper) findViewById(R.id.vf_login_signup);
 		vf_signup_phonecheck = (ViewFlipper) findViewById(R.id.vf_signup_phonecheck);
@@ -53,6 +50,7 @@ public class SignUpActivity extends Activity implements OnResponse {
 		btnLogIn.setOnClickListener(btnClickListener);
         btnSignUp.setOnClickListener(btnClickListener);
         btnSignUpComplete.setOnClickListener(btnClickListener);
+        loginBtn.setOnClickListener(btnClickListener);
 
     }
 	
@@ -80,9 +78,11 @@ public class SignUpActivity extends Activity implements OnResponse {
 			EditText signUpId = (EditText) findViewById(R.id.signUpenterId);
 	    	EditText signUpPass = (EditText) findViewById(R.id.signUpEnterPass);
 	    	EditText signUpPassAgain = (EditText) findViewById(R.id.signUpEnterPassAgain);
+	    	EditText enterId = (EditText) findViewById(R.id.enterId);
 	    	String id = signUpId.getText().toString();
 	    	String pw = signUpPass.getText().toString();
 	    	String pwck = signUpPassAgain.getText().toString();
+	    	String loginId = enterId.getText().toString();
 	        switch (v.getId()) {
 	        case R.id.btn_login:
 	        	if(v==findViewById(R.id.btn_login))
@@ -118,12 +118,24 @@ public class SignUpActivity extends Activity implements OnResponse {
 	        	}else{
 	        		vf_signup_phonecheck.stopFlipping();
 	        	}
+	        case R.id.loginBtn:
+	        	if(v==findViewById(R.id.loginBtn))
+	        	{
+	        		storeUserId(loginId);
+	        		showBobMain(v);
+	        	}
 	        default:
 	        break;
 	        }
 	         
 	    }
 	};
+	
+	private void storeUserId(String userId)
+	{
+		Log.i("MainActivity.java | storeUserId","| userId: " + userId + "|");
+		PreferenceUtil.instance(getApplicationContext()).putUserId(userId);
+	}
 	
 	public void get_certificate_number(View view) {
     	Toast.makeText(SignUpActivity.this, "문자로 받은 인증번호를 입력하십시오",

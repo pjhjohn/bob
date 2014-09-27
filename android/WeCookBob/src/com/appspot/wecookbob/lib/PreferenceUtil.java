@@ -8,6 +8,7 @@ public class PreferenceUtil extends BasePreferenceUtil
  
    private static final String PROPERTY_REG_ID = "registration_id";
    private static final String PROPERTY_APP_VERSION = "appVersion";
+   private static final String PROPERTY_USER_ID = "user_id";
  
    public static synchronized PreferenceUtil instance(Context $context)
    {
@@ -21,7 +22,7 @@ public class PreferenceUtil extends BasePreferenceUtil
       super($context);
    }
  
-   public void putRedId(String $regId)
+   public void putRegId(String $regId)
    {
       put(PROPERTY_REG_ID, $regId);
    }
@@ -29,6 +30,16 @@ public class PreferenceUtil extends BasePreferenceUtil
    public String regId()
    {
       return get(PROPERTY_REG_ID);
+   }
+   
+   public void putUserId(String $userId)
+   {
+      put(PROPERTY_USER_ID, $userId);
+   }
+ 
+   public String userId()
+   {
+      return get(PROPERTY_USER_ID);
    }
  
    public void putAppVersion(int $appVersion)

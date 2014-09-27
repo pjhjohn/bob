@@ -38,6 +38,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 
 public class MainActivity extends ActionBarActivity implements OnResponse {
 	Switch sw;
@@ -99,12 +101,25 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 				if (ischecked) {
 					Toast.makeText(getApplicationContext(), "배곺",
 							Toast.LENGTH_LONG).show();
+					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_hungry");
+					form.put("user-id", "azulpanda");
+					form.submit();
+					
 				} else {
 					Toast.makeText(getApplicationContext(), "배불",
 							Toast.LENGTH_LONG).show();
+					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_full");
+					form.put("user-id", "azulpanda");
+					form.submit();
 				}
 			}
+			
+			
 		});
+		
+		//다이얼로그를 띄워줌.
+        SignUpDialog SUDialog = new SignUpDialog();
+    	SUDialog.show(getFragmentManager(), "Mytag");
 		
 		//      if (checkDataBase()) showList();
 
@@ -336,12 +351,11 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 	{
 		int appVersion = getAppVersion();
 		Log.i("MainActivity.java | storeRegistrationId", "|" + "Saving regId on app version " + appVersion + "|");
-		PreferenceUtil.instance(getApplicationContext()).putRedId(regId);
+		PreferenceUtil.instance(getApplicationContext()).putRegId(regId);
 		PreferenceUtil.instance(getApplicationContext()).putAppVersion(appVersion);
 	}
-	
+
 	@Override
 	public void onResponse(String responseBody) {
-		// TODO Auto-generated method stub
 	}
 }

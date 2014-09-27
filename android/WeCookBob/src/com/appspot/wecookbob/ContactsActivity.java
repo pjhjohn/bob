@@ -1,32 +1,5 @@
 package com.appspot.wecookbob;
 
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import com.appspot.wecookbob.contact.ContactUser;
-import com.appspot.wecookbob.contact.ContactUserListviewAdapter;
-import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.Contact;
-import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.PostRequestForm;
-
 public class ContactsActivity extends Activity {
 	public ArrayList<Contact> contactlist;
 	SQLiteDatabase contactsDb;
