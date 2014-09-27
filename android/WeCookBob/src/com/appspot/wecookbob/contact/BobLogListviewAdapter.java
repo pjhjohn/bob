@@ -64,9 +64,8 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> {
 			btn_call.setBackgroundResource(R.drawable.btn_empty);
 
 		}
-		
-		
-		
+		BobLogListviewAdapter.this.sort(BobLog.COMPARE_BY_BOBREQUESTTIME);
+
 		btn_bob.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v) {

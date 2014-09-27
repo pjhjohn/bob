@@ -3,11 +3,14 @@ package com.appspot.wecookbob;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
@@ -19,8 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
@@ -28,9 +29,10 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.appspot.wecookbob.contact.BobLog;
-import com.appspot.wecookbob.contact.BobLogListviewAdapter;
 import com.appspot.wecookbob.contact.BobLog.NotificationType;
+import com.appspot.wecookbob.contact.BobLogListviewAdapter;
 import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
+import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 import com.appspot.wecookbob.lib.PreferenceUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -38,7 +40,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import com.appspot.wecookbob.lib.PostRequestForm;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
-
 
 public class MainActivity extends ActionBarActivity implements OnResponse {
 	Switch sw;
@@ -115,7 +116,13 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					form.submit();
 				}
 			}
+			
+			
 		});
+		
+		//다이얼로그를 띄워줌.
+        SignUpDialog SUDialog = new SignUpDialog();
+    	SUDialog.show(getFragmentManager(), "Mytag");
 		
 		//      if (checkDataBase()) showList();
 
@@ -353,7 +360,5 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	@Override
 	public void onResponse(String responseBody) {
-		// TODO Auto-generated method stub
-		
 	}
 }
