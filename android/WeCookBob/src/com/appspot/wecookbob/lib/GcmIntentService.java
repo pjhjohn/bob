@@ -50,10 +50,10 @@ public class GcmIntentService extends IntentService
          }
          else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))
          {
-            String msg = intent.getStringExtra("msg");
+            String msg = intent.getStringExtra("sender-user-id");
             // Post notification of received message.
 //            sendNotification("Received: " + extras.toString());
-            sendNotification("Received: " + msg);
+            sendNotification(msg);
             Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
          }
       }
@@ -75,7 +75,7 @@ public class GcmIntentService extends IntentService
       PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
  
       NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher)
-                                                                                .setContentTitle("GCM Notification")
+                                                                                .setContentTitle("밥")
                                                                                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                                                                                 .setContentText(msg)
                                                                                 .setAutoCancel(true)
