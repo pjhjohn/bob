@@ -17,8 +17,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,10 +26,10 @@ import com.appspot.wecookbob.lib.Contact;
 import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.InviteFriendCData;
 import com.appspot.wecookbob.lib.InviteFriendDataAdapter;
+import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 import com.appspot.wecookbob.lib.SendFirstBobAdapter;
 import com.appspot.wecookbob.lib.SendFirstBobCData;
-import com.appspot.wecookbob.request.OnResponse;
-import com.appspot.wecookbob.request.RequestForm;
 
 public class ContactsActivity extends Activity implements OnResponse {
 	public ArrayList<Contact> contactlist;
@@ -244,9 +242,9 @@ public class ContactsActivity extends Activity implements OnResponse {
 			dataCollection.put(contactlist.get(i).getPhoneNumber());
 		}
 		String stringToSend = dataCollection.toString();
-		RequestForm form = new RequestForm(ContactsActivity.this);
-		form.add("phone-number-list", stringToSend);
-		form.sendTo("http://wecookbob.appspot.com/contacts");
+		PostRequestForm form = new PostRequestForm(ContactsActivity.this,"http://wecookbob.appspot.com/contacts");
+		form.put("phone-number-list", stringToSend);
+		form.submit();
 	}
 
 	public void insert(ArrayList<Contact> listToInsert) {

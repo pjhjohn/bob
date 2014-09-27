@@ -5,7 +5,7 @@
     android:orientation="vertical"
 	android:background="#ffffff"
     
-    tools:context="com.appspot.wecookbob.MainActivity" >
+    tools:context="com.appspot.wecookbob.BobMainActivity" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/mainFriendList"
+                android:id="@+id/MainFriendList"
                 android:layout_width="dp"
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                 android:textSize="8pt" />
 
             <ImageButton
-                android:id="@+id/addFriendBtn"
+                android:id="@+id/addFirendBtn"
                 android:layout_width="wrap_content"
 				android:background="@null"	
 				android:layout_marginTop="10dp"
@@ -91,7 +91,7 @@
                 
 	</LinearLayout>
 		<ListView
-		android:id="@+id/mainFriendsListView"
+		android:id="@+id/lv_bob_log"
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"></ListView>
 	    

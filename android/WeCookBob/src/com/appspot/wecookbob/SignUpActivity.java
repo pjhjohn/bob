@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.appspot.wecookbob.request.OnResponse;
-import com.appspot.wecookbob.request.RequestForm;
+import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 
 
 
@@ -107,10 +107,10 @@ public class SignUpActivity extends Activity implements OnResponse {
 	        	{
 	        		if (pw.equals(pwck)) {
 	        			System.out.println(pw);
-	        			RequestForm form = new RequestForm(SignUpActivity.this);
-						form.add("sign-up-id", id);
-						form.add("sign-up-pw", pw);
-						form.sendTo("http://wecookbob.appspot.com/signup");
+	        			PostRequestForm form = new PostRequestForm(SignUpActivity.this,"http://wecookbob.appspot.com/contacts");
+						form.put("sign-up-id", id);
+						form.put("sign-up-pw", pw);
+						form.submit();
 						vf_signup_phonecheck.setDisplayedChild(vf_signup_phonecheck.indexOfChild(findViewById(R.id.vf_certification)));
 					}
 	        		else Toast.makeText(SignUpActivity.this, "비밀번호를 확인하십시오",

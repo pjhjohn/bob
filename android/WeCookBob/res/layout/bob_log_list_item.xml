@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:layout_marginTop="5dp"
+	android:layout_marginBottom="5dp"
+	android:gravity="center_vertical"
+	android:orientation="horizontal">
+	
+	<TextView
+		android:id="@+id/bobtner_name"
+		android:text="TextView"
+		android:layout_weight="1"
+		android:layout_height="wrap_content"
+		android:layout_width="0dp"
+		android:layout_marginLeft="10dp"
+		android:textSize="12pt"
+		>
+	</TextView>
+	<TextView
+		android:id="@+id/request_time"
+		android:text="TextView"
+		android:layout_weight="0.5"
+		android:layout_height="wrap_content"
+		android:layout_width="0dp"
+		android:textSize="4pt"
+		>
+	</TextView>
+	
+	<ImageButton
+	    android:id="@+id/btn_call"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+		android:background="#ffffff"
+		android:layout_marginRight="3dp"
+		/>
+	
+	<ImageButton
+	    android:id="@+id/btn_bob"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+		android:background="#ffffff"
+		android:layout_marginRight="10dp" 
+		/>
+
+</LinearLayout>
+
