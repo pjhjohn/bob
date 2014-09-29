@@ -7,6 +7,7 @@ public class PreferenceUtil extends BasePreferenceUtil
    private static PreferenceUtil _instance = null;
  
    private static final String PROPERTY_REG_ID = "registration_id";
+   private static final String PROPERTY_DEVICE_ID = "device_id";
    private static final String PROPERTY_APP_VERSION = "appVersion";
    private static final String PROPERTY_USER_ID = "user_id";
    private static final String PROPERTY_USER_NAME = "user_name";
@@ -14,6 +15,7 @@ public class PreferenceUtil extends BasePreferenceUtil
    private static final String PROPERTY_SIGNUP_PW = "signup_pw";
    private static final String PROPERTY_SIGNUP_MOBILE = "signup_mobile";
    private static final String GET_ALARM = "get_alarm";
+   private static final String REGISTERED = "registered";
  
    public static synchronized PreferenceUtil instance(Context $context)
    {
@@ -45,6 +47,16 @@ public class PreferenceUtil extends BasePreferenceUtil
    public String regId()
    {
       return get(PROPERTY_REG_ID);
+   }
+   
+   public void putDeviceId(String $deviceId)
+   {
+	   put(PROPERTY_DEVICE_ID, $deviceId);
+   }
+   
+   public String deviceId()
+   {
+	   return get(PROPERTY_DEVICE_ID);
    }
    
    public void putUserId(String $userId)
@@ -95,6 +107,16 @@ public class PreferenceUtil extends BasePreferenceUtil
    public String signupMobile()
    {
 	   return get(PROPERTY_SIGNUP_MOBILE);
+   }
+   
+   public void putRegistered(String $registered)
+   {
+	   put(REGISTERED, $registered);
+   }
+   
+   public String registered()
+   {
+	   return get(REGISTERED);
    }
  
    public void putAppVersion(int $appVersion)

@@ -63,6 +63,24 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		PreferenceUtil.instance(getApplicationContext()).putSignupId("");
+		PreferenceUtil.instance(getApplicationContext()).putSignupPw("");
+		PreferenceUtil.instance(getApplicationContext()).putSignupMobile("");
+		
+		TelephonyManager tm =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		String deviceId = tm.getDeviceId();
+		PreferenceUtil.instance(getApplicationContext()).putDeviceId(deviceId);
+		
+		if(PreferenceUtil.instance(getApplicationContext()).registered().isEmpty()){
+			PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/register");
+			form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
+			form.put("reg-id", PreferenceUtil.instance(getApplicationContext()).regId());
+			form.put("device-id", PreferenceUtil.instance(getApplicationContext()).deviceId());
+			System.out.println("register");
+			System.out.println("unregister");
+			form.submit();
+		}
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bob_main);
 
@@ -134,11 +152,6 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 		// display received msg
 		String msg = getIntent().getStringExtra("msg");
-
-		TelephonyManager tm =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		String deviceid = tm.getDeviceId();
-
-		System.out.println(deviceid);
 	}
 
 
@@ -158,6 +171,20 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 			// ( 2 ) change add to remove
 			Toast.makeText(MainActivity.this, "식사를 시작해볼텐가?",
 					Toast.LENGTH_SHORT).show();
+			PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/unregister");
+			form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
+			form.put("reg-id", PreferenceUtil.instance(getApplicationContext()).regId());
+			form.put("device-id", PreferenceUtil.instance(getApplicationContext()).deviceId());
+			System.out.println("unregister");
+			System.out.println(PreferenceUtil.instance(getApplicationContext()).userId());
+			System.out.println(PreferenceUtil.instance(getApplicationContext()).regId());
+			System.out.println(PreferenceUtil.instance(getApplicationContext()).deviceId());
+			form.submit();
+			PreferenceUtil.instance(getApplicationContext()).putUserId("");
+			PreferenceUtil.instance(getApplicationContext()).putUserName("");
+			PreferenceUtil.instance(getApplicationContext()).putRegistered("");
+			Intent intent = new Intent(this, SignUpActivity.class);
+	        startActivity(intent);
 		}
 		else{
 			// if a the new item is clicked show "Toast" message.
@@ -333,5 +360,21 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	@Override
 	public void onResponse(String responseBody) {
+		JSONObject jsonResponse;
+		try {
+			jsonResponse = new JSONObject(responseBody);
+			String responseType = jsonResponse.getString("type");
+			if(responseType.equals("register-check"))
+			{
+				if (jsonResponse.getBoolean("registered"))
+				{
+					PreferenceUtil.instance(getApplicationContext()).putRegistered("registered");
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e);
+			e.printStackTrace();
+		}
 	}
 }

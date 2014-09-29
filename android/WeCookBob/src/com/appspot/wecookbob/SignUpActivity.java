@@ -27,6 +27,13 @@ public class SignUpActivity extends Activity implements OnResponse {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		if(!PreferenceUtil.instance(getApplicationContext()).userId().isEmpty())
+		{
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+			this.finish();
+		}
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 	

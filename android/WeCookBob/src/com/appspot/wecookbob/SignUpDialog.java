@@ -1,5 +1,7 @@
 package com.appspot.wecookbob;
 
+import com.appspot.wecookbob.lib.PreferenceUtil;
+
 import android.*;
 import android.app.*;
 import android.os.*;
@@ -13,6 +15,11 @@ public class SignUpDialog extends DialogFragment{
 	
 	@Override
 	public Dialog onCreateDialog(Bundle saveInstanceState){
+		if(PreferenceUtil.instance(this.getActivity().getApplicationContext()).userName().isEmpty())
+		{
+			SignUpDialog.this.dismiss();
+		}
+		
 		AlertDialog.Builder SignUpDialogBuilder = new AlertDialog.Builder(
 				getActivity());
 		LayoutInflater SignUpDialogInflater = getActivity().getLayoutInflater();

@@ -25,6 +25,7 @@ import com.appspot.wecookbob.contact.BobLog.NotificationType;
 import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.lib.PreferenceUtil;
 
 
 public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostRequestForm.OnResponse {
@@ -93,7 +94,7 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 				elementData.type = NotificationType.SENT;
 
 				PostRequestForm form = new PostRequestForm(BobLogListviewAdapter.this,"http://wecookbob.appspot.com/bob");
-				form.put("sender-user-id", "dongwoooo");
+				form.put("sender-user-id", PreferenceUtil.instance(myContext).userId());
 				form.put("receiver-user-id", bobtnerId);
 				form.submit();
 				Toast.makeText(myContext, bobtnerId + "에게 밥을 보냅니다", Toast.LENGTH_LONG).show();
@@ -109,12 +110,6 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 		try {
 			jsonResponse = new JSONObject(responseBody);
 			boolean success = jsonResponse.getBoolean("success");
-			String stringDate = jsonResponse.getString("bob-request-time");
-			SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date d = (Date) f.parse(stringDate);
-			long bobRequestTime = d.getTime();
-			String bobtnerId = jsonResponse.getString("bobtner-id");
-			String bobtnerName = jsonResponse.getString("bobtner-name");
 			BobLog.NotificationType notificationType = null;
 			try {
 				notificationType = BobLog.stringToNotificationType(jsonResponse.getString("notification-type"));
@@ -123,6 +118,12 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 			}
 			if (success) {
 				System.out.println("success");
+				String stringDate = jsonResponse.getString("bob-request-time");
+				SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date d = (Date) f.parse(stringDate);
+				long bobRequestTime = d.getTime();
+				String bobtnerId = jsonResponse.getString("bobtner-id");
+				String bobtnerName = jsonResponse.getString("bobtner-name");
 				bobLogHelper = new BobLogSQLiteOpenHelper(this.myContext,
 						"boblog.db",
 						null,
@@ -136,7 +137,7 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 				Toast.makeText(this.myContext, "상대방에게 밥을 보냈습니다",
 						Toast.LENGTH_SHORT).show();
 			}
-			else if (success) {
+			else {
 				Toast.makeText(this.myContext, "상대방이 배가 부릅니다",
 						Toast.LENGTH_SHORT).show();
 			}

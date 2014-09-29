@@ -44,8 +44,7 @@
     android:value="@integer/google_play_services_version" />
         <activity
             android:name="com.appspot.wecookbob.MainActivity"
-            android:label="@string/bob" 
-            android:parentActivityName="com.appspot.wecookbob.SignUpActivity" >
+            android:label="@string/bob"  >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appspot.wecookbob.SignUp" />

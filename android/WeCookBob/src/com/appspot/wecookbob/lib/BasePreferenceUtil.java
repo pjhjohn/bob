@@ -38,7 +38,7 @@ public class BasePreferenceUtil
     */
    protected String get(String $key)
    {
-      return _sharedPreferences.getString($key, null);
+      return _sharedPreferences.getString($key, "");
    }
  
    /**
