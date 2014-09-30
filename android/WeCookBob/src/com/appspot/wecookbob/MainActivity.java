@@ -3,10 +3,6 @@ package com.appspot.wecookbob;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,7 +12,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -31,19 +26,15 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.appspot.wecookbob.contact.BobLog;
-import com.appspot.wecookbob.contact.ContactUser;
-import com.appspot.wecookbob.contact.ContactUserListviewAdapter;
 import com.appspot.wecookbob.contact.BobLog.NotificationType;
 import com.appspot.wecookbob.contact.BobLogListviewAdapter;
 import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.lib.PostRequestForm;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 import com.appspot.wecookbob.lib.PreferenceUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import com.appspot.wecookbob.lib.PostRequestForm;
 
 public class MainActivity extends ActionBarActivity implements OnResponse {
 	Switch sw1, sw2;
