@@ -1,4 +1,4 @@
-package com.appspot.wecookbob;
+package com.appspot.wecookbob.activity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,12 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.appspot.wecookbob.R;
+import com.appspot.wecookbob.R.id;
+import com.appspot.wecookbob.R.layout;
+import com.appspot.wecookbob.R.menu;
+import com.appspot.wecookbob.data.PreferenceUtil;
+import com.appspot.wecookbob.data.PreferenceUtil.PROPERTY;
 import com.appspot.wecookbob.lib.PostRequestForm;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
-import com.appspot.wecookbob.lib.PreferenceUtil;
-
-
-
 
 public class SignUpActivity extends Activity implements OnResponse {
 	Button btnLogIn, btnSignUp, btnSignUpComplete, loginBtn, btnCertificate, btnGetCertificationNumber;
@@ -34,6 +36,12 @@ public class SignUpActivity extends Activity implements OnResponse {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		if(!PreferenceUtil.getInstance(getApplicationContext()).getString(PROPERTY.USER_ID, "").isEmpty()) {
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+			this.finish();
+		}
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 	
@@ -108,82 +116,68 @@ public class SignUpActivity extends Activity implements OnResponse {
 	        switch (v.getId()) {
 	        case R.id.btn_login:
 	        	if(v==findViewById(R.id.btn_login))
-	        	{
 	        		vf_login_signup.setDisplayedChild(vf_login_signup.indexOfChild(findViewById(R.id.vf_login)));
-			    }else{
+	        	else
 	        		vf_login_signup.stopFlipping();
-	        	}
 	            break;
 	        
 	        case R.id.btn_signup:
 	        	if(v==findViewById(R.id.btn_signup))
-	        	{
 	        		vf_login_signup.setDisplayedChild(vf_login_signup.indexOfChild(findViewById(R.id.vf_signup)));
-	        	}else{
+	        	else
 	        		vf_login_signup.stopFlipping();
-	        	}
 	            break;
 
 	        case R.id.btn_signup_complete:
 	        	if(v==findViewById(R.id.btn_signup_complete))
 	        	{
 	        		if (pw.equals(pwck)&!pw.equals(null)&!pw.equals("")) {
-						PreferenceUtil.instance(getApplicationContext()).putSignupId(id);
-						PreferenceUtil.instance(getApplicationContext()).putSignupPw(pw);
-	        			PostRequestForm form = new PostRequestForm(SignUpActivity.this,"http://wecookbob.appspot.com/user_id_check");
-						form.put("signup-id", id);
-						form.submit();
+						PreferenceUtil.getInstance(getApplicationContext()).putString(id, PROPERTY.SIGNUP_ID);
+						PreferenceUtil.getInstance(getApplicationContext()).putString(pw, PROPERTY.SIGNUP_PW);
+	        			new PostRequestForm(SignUpActivity.this,"http://wecookbob.appspot.com/user_id_check")
+	        				.put("signup-id", id)
+	        				.submit();
 					}
-	        		else Toast.makeText(SignUpActivity.this, "비밀번호를 확인하십시오",
-	                        Toast.LENGTH_SHORT).show();
+	        		else Toast.makeText(SignUpActivity.this, "비밀번호를 확인하십시오", Toast.LENGTH_SHORT).show();
 	        	}else{
 	        		vf_signup_phonecheck.stopFlipping();
 	        	}
 	        case R.id.loginBtn:
-	        	if(v==findViewById(R.id.loginBtn))
-	        	{
+	        	if(v==findViewById(R.id.loginBtn)) {
 	        		PostRequestForm form = new PostRequestForm(SignUpActivity.this, "http://wecookbob.appspot.com/login");
 	        		form.put("user-id",loginId);
 	        		form.put("password", loginPw);
 	        		form.submit();
 	        	}
 	        case R.id.btn_get_certification_number:
-	        	if(v==findViewById(R.id.btn_get_certification_number))
-	        	{
+	        	if(v==findViewById(R.id.btn_get_certification_number)) {
 	        		PostRequestForm form = new PostRequestForm(SignUpActivity.this, "http://wecookbob.appspot.com/mobile_check");
 	        		form.put("mobile", mobile);
 	        		form.submit();
 	        	}
 	        case R.id.btn_certificate:
-	        	if(v==findViewById(R.id.btn_certificate))
-	        	{
-	        		if(!PreferenceUtil.instance(getApplicationContext()).signupMobile().equals(null))
-	        		{
+	        	if(v==findViewById(R.id.btn_certificate)) {
+	        		PreferenceUtil pref = PreferenceUtil.getInstance(getApplicationContext());
+	        		if(pref.getString(PROPERTY.SIGNUP_MOBILE, null) != null) {
 	        			System.out.println("GO");
 	        			PostRequestForm form = new PostRequestForm(SignUpActivity.this, "http://wecookbob.appspot.com/signup");
-						form.put("signup-id", PreferenceUtil.instance(getApplicationContext()).signupId());
-						form.put("signup-pw", PreferenceUtil.instance(getApplicationContext()).signupPw());
-						form.put("signup-mobile", PreferenceUtil.instance(getApplicationContext()).signupMobile());
+						form.put("signup-id", pref.getString(PROPERTY.SIGNUP_ID, ""));
+						form.put("signup-pw", pref.getString(PROPERTY.SIGNUP_PW, ""));
+						form.put("signup-mobile", pref.getString(PROPERTY.SIGNUP_MOBILE, ""));
 						System.out.println(form);
 						form.submit();
 	        		}
-	        		else
-	        		{
-	        			Toast.makeText(SignUpActivity.this, "전화번호를 인증받지 않았습니다",
-		                        Toast.LENGTH_SHORT).show();
+	        		else {
+	        			Toast.makeText(SignUpActivity.this, "전화번호를 인증받지 않았습니다", Toast.LENGTH_SHORT).show();
 	        		}
 	        	}
-	        default:
-	        break;
 	        }
-	         
 	    }
 	};
 	
-	private void storeUserId(String userId)
-	{
+	private void storeUserId(String userId) {
 		Log.i("MainActivity.java | storeUserId","| userId: " + userId + "|");
-		PreferenceUtil.instance(getApplicationContext()).putUserId(userId);
+		PreferenceUtil.getInstance(getApplicationContext()).putString(userId, PROPERTY.USER_ID);
 	}
 	
 	public void get_certificate_number(View view) {
@@ -219,65 +213,41 @@ public class SignUpActivity extends Activity implements OnResponse {
 			if(responseType.equals("user-id-check"))
 			{
 				System.out.println(jsonResponse);
-				if(jsonResponse.getBoolean("available"))
-				{
+				if(jsonResponse.getBoolean("available")) 
 					vf_signup_phonecheck.setDisplayedChild(vf_signup_phonecheck.indexOfChild(findViewById(R.id.vf_certification)));
-				}
 				else
-				{
-					Toast.makeText(SignUpActivity.this, "사용중인 아이디입니다",
-	                        Toast.LENGTH_SHORT).show();
-				}
+					Toast.makeText(SignUpActivity.this, "사용중인 아이디입니다", Toast.LENGTH_SHORT).show();
 			}
 			else if(responseType.equals("mobile-check"))
 			{
 				System.out.println(jsonResponse);
 				if(jsonResponse.getBoolean("available"))
 				{
-					PreferenceUtil.instance(getApplicationContext()).putSignupMobile(jsonResponse.getString("mobile"));
-					Toast.makeText(SignUpActivity.this, "사용 가능한 전화번호입니다",
-	                        Toast.LENGTH_SHORT).show();
-				}
-				else
-				{
-					Toast.makeText(SignUpActivity.this, "등록된 전화번호입니다",
-	                        Toast.LENGTH_SHORT).show();
-				}
+					PreferenceUtil.getInstance(getApplicationContext()).putString(jsonResponse.getString("mobile"), PROPERTY.SIGNUP_MOBILE);
+					Toast.makeText(SignUpActivity.this, "사용 가능한 전화번호입니다", Toast.LENGTH_SHORT).show();
+				} else Toast.makeText(SignUpActivity.this, "등록된 전화번호입니다", Toast.LENGTH_SHORT).show();
 			}
 			else if(responseType.equals("signup-check"))
 			{
 				System.out.println(jsonResponse);
-				if(jsonResponse.getBoolean("success"))
-				{
+				if(jsonResponse.getBoolean("success")) {
 					storeUserId(jsonResponse.getString("signup-id"));
 					showBobMain(vf_certification);
 				}
-				else
-				{
-					Toast.makeText(SignUpActivity.this, "회원가입에 실패했습니다",
-	                        Toast.LENGTH_SHORT).show();
-				}
+				else Toast.makeText(SignUpActivity.this, "회원가입에 실패했습니다", Toast.LENGTH_SHORT).show();
 			}
 			else if(responseType.equals("login-check"))
 			{
 				System.out.println(jsonResponse);
-				if(jsonResponse.getBoolean("success"))
-				{
+				if(jsonResponse.getBoolean("success")) {
 					storeUserId(jsonResponse.getString("user-id"));
 					showBobMain(vf_login);
 				}
-				else
-				{
-					Toast.makeText(SignUpActivity.this, "잘못된 아이디 또는 비밀번호입니다",
-	                        Toast.LENGTH_SHORT).show();
-				}
+				else Toast.makeText(SignUpActivity.this, "잘못된 아이디 또는 비밀번호입니다", Toast.LENGTH_SHORT).show();
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			System.out.println(e);
 			e.printStackTrace();
 		}
-		
-		
 	}
 }

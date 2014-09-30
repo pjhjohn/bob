@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.contact;
+package com.appspot.wecookbob.view;
 
 import java.util.Comparator;
 

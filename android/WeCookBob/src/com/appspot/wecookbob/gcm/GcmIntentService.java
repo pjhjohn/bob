@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.lib;
+package com.appspot.wecookbob.gcm;
 
 import android.app.*;
 import android.content.*;
@@ -6,7 +6,11 @@ import android.os.*;
 import android.support.v4.app.*;
 import android.util.*;
 
-import com.appspot.wecookbob.*;
+import com.appspot.wecookbob.R;
+import com.appspot.wecookbob.activity.MainActivity;
+import com.appspot.wecookbob.data.PreferenceUtil;
+import com.appspot.wecookbob.data.PreferenceUtil.PROPERTY;
+import com.appspot.wecookbob.view.*;
 import com.google.android.gms.gcm.*;
 
 public class GcmIntentService extends IntentService
@@ -62,7 +66,7 @@ public class GcmIntentService extends IntentService
 	// a GCM message.
 	private void sendNotification(String msg)
 	{
-		String getAlarm = PreferenceUtil.instance(getApplicationContext()).getAlarm();
+		String getAlarm = PreferenceUtil.getInstance(getApplicationContext()).getString(PROPERTY.ALARM, "");
 		if(getAlarm.equals("true")){
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

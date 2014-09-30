@@ -1,4 +1,4 @@
-package com.appspot.wecookbob;
+package com.appspot.wecookbob.view;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.appspot.wecookbob.R;
+import com.appspot.wecookbob.data.PreferenceUtil;
+import com.appspot.wecookbob.data.PreferenceUtil.PROPERTY;
+
+
+
 // 다이얼로그 만들기
 public class SignUpDialog extends DialogFragment{
 	View dialogView;
@@ -17,6 +23,11 @@ public class SignUpDialog extends DialogFragment{
 	
 	@Override
 	public Dialog onCreateDialog(Bundle saveInstanceState){
+		if(PreferenceUtil.getInstance(this.getActivity().getApplicationContext()).getString(PROPERTY.USER_NAME, "").isEmpty())
+		{
+			SignUpDialog.this.dismiss();
+		}
+		
 		AlertDialog.Builder SignUpDialogBuilder = new AlertDialog.Builder(
 				getActivity());
 		LayoutInflater SignUpDialogInflater = getActivity().getLayoutInflater();

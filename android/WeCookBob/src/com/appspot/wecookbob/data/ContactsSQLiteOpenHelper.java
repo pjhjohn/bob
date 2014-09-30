@@ -1,32 +1,31 @@
-package com.appspot.wecookbob.lib;
+package com.appspot.wecookbob.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class BobLogSQLiteOpenHelper extends SQLiteOpenHelper {
+public class ContactsSQLiteOpenHelper extends SQLiteOpenHelper {
 
-	 public BobLogSQLiteOpenHelper(Context context, String name,
+	 public ContactsSQLiteOpenHelper(Context context, String name,
 	            CursorFactory factory, int version) {
 	        super(context, name, factory, version);
 	    }
 	 
 	    @Override
 	    public void onCreate(SQLiteDatabase db) {
-	        String sql = "create table boblog (" +
+	        String sql = "create table contacts (" +
 	                "_id integer primary key autoincrement, " +
-	                "bobtnerId text, " +
-	                "bobtnerName text, " +
-	                "bobtnerPhoneNumber text, " +
-	                "notificationType string, " +
-	                "bobRequestTime text);";
+	                "userName text, " +
+	                "phoneNumber text, " +
+	                "userId string, " +
+	                "hasLog boolean);";
 	        db.execSQL(sql);
 	    }
-	 
+
 	    @Override
 	    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-	        String sql = "drop table if exists boblog";
+	        String sql = "drop table if exists contacts";
 	        db.execSQL(sql);
 	        onCreate(db);
 	    }
