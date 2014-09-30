@@ -94,8 +94,10 @@ public class ContactsActivity extends Activity {
 		}
 
 		firstBobAdapter = new ContactUserListviewAdapter(this, firstBobArray, R.layout.send_first_bob_list_item, R.id.send_first_bob_friend_name, R.id.btn_send_first_bob);
+		firstBobAdapter.notifyDataSetChanged();
 		firstBobListView.setAdapter(firstBobAdapter);
 		inviteAdapter = new ContactUserListviewAdapter(this, inviteArray, R.layout.invite_friend_list_item, R.id.invite_friend_name, R.id.btn_invite);
+		inviteAdapter.notifyDataSetChanged();
 		inviteListView.setAdapter(inviteAdapter);
 	}
 

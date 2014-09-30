@@ -1,16 +1,28 @@
 package com.appspot.wecookbob.lib;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.*;
 import android.content.*;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.*;
 import android.support.v4.app.*;
 import android.util.*;
 
 import com.appspot.wecookbob.*;
+import com.appspot.wecookbob.contact.BobLog;
+import com.appspot.wecookbob.contact.BobLogListviewAdapter;
 import com.google.android.gms.gcm.*;
 
 public class GcmIntentService extends IntentService
 {
+	SQLiteDatabase contactsDb;
+	SQLiteDatabase bobLogDb;
+	ContactsSQLiteOpenHelper contactsHelper;
+	BobLogSQLiteOpenHelper bobLogHelper;
+	
 	public static final int NOTIFICATION_ID = 1;
 
 	public GcmIntentService()
@@ -46,10 +58,43 @@ public class GcmIntentService extends IntentService
 			}
 			else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))
 			{
-				String msg = intent.getStringExtra("sender-user-id");
+				String bobtnerId = intent.getStringExtra("sender-user-id");
+				String bobtnerName = intent.getStringExtra("sender-user-name");
+				String stringDate = intent.getStringExtra("bob-request-time");
 				// Post notification of received message.
 				//            sendNotification("Received: " + extras.toString());
-				sendNotification(msg);
+				sendNotification(bobtnerId);
+				
+				SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date d;
+				try {
+					d = (Date) f.parse(stringDate);
+					long bobRequestTime = d.getTime();
+					bobLogHelper = new BobLogSQLiteOpenHelper(this.getBaseContext(),
+							"boblog.db",
+							null,
+							1);
+					bobLogDb = bobLogHelper.getWritableDatabase();
+					ContentValues bobLogValues = new ContentValues();
+					bobLogValues.put("bobRequestTime", bobRequestTime);
+					bobLogValues.put("bobtnerId", bobtnerId);
+					bobLogValues.put("bobtnerName", bobtnerName);
+					bobLogValues.put("notificationType", BobLog.NotificationType.RECEIVED.toString());
+					if(bobLogDb.update("boblog", bobLogValues, "bobtnerId=?", new String[]{bobtnerId})==0)
+					{
+						contactsHelper = new ContactsSQLiteOpenHelper(this.getBaseContext(), "contacts.db", null, 1);
+						contactsDb = contactsHelper.getWritableDatabase();
+						ContentValues updateValues = new ContentValues();
+						updateValues.put("hasLog", true);
+						contactsDb.update("contacts", updateValues, "userId=?", new String[]{bobtnerId});
+						bobLogDb.insert("boblog", null, bobLogValues);
+					}
+					bobLogDb.close();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
 			}
 		}

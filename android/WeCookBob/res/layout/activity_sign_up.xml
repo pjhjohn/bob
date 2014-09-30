@@ -116,7 +116,7 @@
 					<EditText 
 					    android:id="@+id/signUpenterId" 
 					    android:layout_width="100pt" 
-					    android:layout_height="25dp" 
+					    android:layout_height="wrap_content" 
 					    android:layout_marginTop="10dip" 
 					    android:background="#99FFFFFF" 
 					    android:ems="10" 
@@ -127,7 +127,7 @@
 					<EditText 
 					    android:id="@+id/signUpEnterPass" 
 					    android:layout_width="100pt" 
-					    android:layout_height="25dp" 
+					    android:layout_height="wrap_content" 
 					    android:layout_marginTop="5dip" 
 					    android:background="#99FFFFFF" 
 					    android:ems="10"
@@ -138,7 +138,7 @@
 					<EditText 
 					    android:id="@+id/signUpEnterPassAgain" 
 					    android:layout_width="100pt" 
-					    android:layout_height="25dp" 
+					    android:layout_height="wrap_content" 
 					    android:layout_marginTop="5dip" 
 					    android:background="#99FFFFFF" 
 					    android:ems="10" 

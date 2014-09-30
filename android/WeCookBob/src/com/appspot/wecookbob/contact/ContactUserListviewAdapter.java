@@ -92,6 +92,7 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> implem
 				else if (btnID == R.id.btn_invite) {
 					Toast.makeText(myContext, phoneNumber + "에게 초대 메시지를 보냅니다", Toast.LENGTH_LONG).show();
 				}
+				
 			}
 		});
 		return view;
@@ -128,13 +129,15 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> implem
 				bobLogValues.put("bobtnerName", bobtnerName);
 				bobLogValues.put("notificationType", BobLog.NotificationType.SENT.toString());
 				bobLogDb.insert("boblog", null, bobLogValues);
-				bobLogDb.close();contactsDb = contactsHelper.getWritableDatabase();
+				bobLogDb.close();
+				contactsDb = contactsHelper.getWritableDatabase();
 				ContentValues updateValues = new ContentValues();
 				updateValues.put("hasLog", true);
 				contactsDb.update("contacts", updateValues, "userId=?", new String[]{bobtnerId});
 				this.notifyDataSetChanged();
 				Toast.makeText(this.myContext, "상대방에게 밥을 보냈습니다",
 						Toast.LENGTH_SHORT).show();
+				ContactUserListviewAdapter.this.notifyDataSetChanged();
 			}
 			else if (success) {
 				Toast.makeText(this.myContext, "상대방이 배가 부릅니다",

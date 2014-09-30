@@ -38,7 +38,14 @@ public class BasePreferenceUtil
     */
    protected String get(String $key)
    {
-      return _sharedPreferences.getString($key, "");
+	   if($key.equals("get_alarm"))
+	   {
+		   return _sharedPreferences.getString($key, "true");
+	   }
+	   else 
+	   {
+		   return _sharedPreferences.getString($key, "");
+	   }
    }
  
    /**

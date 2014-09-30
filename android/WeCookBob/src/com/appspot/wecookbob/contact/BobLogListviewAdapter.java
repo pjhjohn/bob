@@ -103,6 +103,30 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 
 		return view;
 }
+	
+	public void updateBobLog(String bobtnerId, String bobtnerName, String stringDate)
+	{
+		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d;
+		try {
+			d = (Date) f.parse(stringDate);
+			long bobRequestTime = d.getTime();
+			bobLogHelper = new BobLogSQLiteOpenHelper(this.myContext,
+					"boblog.db",
+					null,
+					1);
+			bobLogDb = bobLogHelper.getWritableDatabase();
+			ContentValues updateValues = new ContentValues();
+			updateValues.put("bobRequestTime", bobRequestTime);
+			updateValues.put("notificationType", BobLog.NotificationType.SENT.toString());
+			bobLogDb.update("boblog", updateValues, "bobtnerId=?", new String[]{bobtnerId});
+			BobLogListviewAdapter.this.sort(BobLog.COMPARE_BY_BOBREQUESTTIME);
+			BobLogListviewAdapter.this.notifyDataSetChanged();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void onResponse(String responseBody) {
@@ -118,22 +142,7 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 			}
 			if (success) {
 				System.out.println("success");
-				String stringDate = jsonResponse.getString("bob-request-time");
-				SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date d = (Date) f.parse(stringDate);
-				long bobRequestTime = d.getTime();
-				String bobtnerId = jsonResponse.getString("bobtner-id");
-				String bobtnerName = jsonResponse.getString("bobtner-name");
-				bobLogHelper = new BobLogSQLiteOpenHelper(this.myContext,
-						"boblog.db",
-						null,
-						1);
-				bobLogDb = bobLogHelper.getWritableDatabase();
-				ContentValues updateValues = new ContentValues();
-				updateValues.put("bobRequestTime", bobRequestTime);
-				bobLogDb.update("boblog", updateValues, "bobtnerId=?", new String[]{bobtnerId});
-				BobLogListviewAdapter.this.sort(BobLog.COMPARE_BY_BOBREQUESTTIME);
-				BobLogListviewAdapter.this.notifyDataSetChanged();
+				updateBobLog(jsonResponse.getString("bobtner-id"), jsonResponse.getString("bobtner-name"), jsonResponse.getString("bob-request-time"));
 				Toast.makeText(this.myContext, "상대방에게 밥을 보냈습니다",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -144,11 +153,6 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 	}
-
-
 }

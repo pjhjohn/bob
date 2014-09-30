@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
@@ -37,6 +38,9 @@ import com.appspot.wecookbob.contact.BobLog.NotificationType;
 import com.appspot.wecookbob.contact.BobLogListviewAdapter;
 import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.lib.GcmIntentService;
+import com.appspot.wecookbob.lib.MyResultReceiver;
+import com.appspot.wecookbob.lib.MyResultReceiver.Receiver;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
 import com.appspot.wecookbob.lib.PreferenceUtil;
 import com.google.android.gms.common.ConnectionResult;
@@ -52,8 +56,9 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	//declare main listview components
 	private ListView BobLogListView;
-	private BobLogListviewAdapter BobLogAdapter;
+	public static BobLogListviewAdapter BobLogAdapter;
 	private ArrayList<BobLog> bobLogArray;
+	public MyResultReceiver mReceiver;
 
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	private static final String SENDER_ID = "71421696637";
@@ -63,6 +68,11 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.bob_main);
+
+		showList();
+		
 		PreferenceUtil.instance(getApplicationContext()).putSignupId("");
 		PreferenceUtil.instance(getApplicationContext()).putSignupPw("");
 		PreferenceUtil.instance(getApplicationContext()).putSignupMobile("");
@@ -76,16 +86,10 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 			form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
 			form.put("reg-id", PreferenceUtil.instance(getApplicationContext()).regId());
 			form.put("device-id", PreferenceUtil.instance(getApplicationContext()).deviceId());
-			System.out.println("register");
-			System.out.println("unregister");
 			form.submit();
 		}
 		
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.bob_main);
-
-		showList();
-
+		
 		sw1 = (Switch) findViewById(R.id.alarm_switch);
 		sw1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -115,14 +119,14 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					Toast.makeText(getApplicationContext(), "배곺",
 							Toast.LENGTH_LONG).show();
 					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_hungry");
-					form.put("user-id", "azulpanda");
+					form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
 					form.submit();
 
 				} else {
 					Toast.makeText(getApplicationContext(), "배불",
 							Toast.LENGTH_LONG).show();
 					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_full");
-					form.put("user-id", "azulpanda");
+					form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
 					form.submit();
 				}
 			}
