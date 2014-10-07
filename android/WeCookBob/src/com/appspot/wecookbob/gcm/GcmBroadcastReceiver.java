@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.lib;
+package com.appspot.wecookbob.gcm;
 
 import android.app.Activity;
 import android.content.ComponentName;

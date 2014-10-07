@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.lib;
+package com.appspot.wecookbob.view;
 
 public class Contact {
 	String phoneNumber;

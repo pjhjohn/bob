@@ -39,7 +39,7 @@ public class PostRequestForm extends AsyncTask<String, Void, String> {
 		this.nameValueList = new ArrayList<NameValuePair>();
 	}
 	
-	public void put(String name, String value) {
+	public PostRequestForm put(String name, String value) {
 		int indexToRemove = -1;
 		for(int i = 0; i < nameValueList.size(); i++) {
 			if(name == nameValueList.get(i).getName()) {
@@ -49,6 +49,7 @@ public class PostRequestForm extends AsyncTask<String, Void, String> {
 		}
 		if(indexToRemove >= 0) this.nameValueList.remove(indexToRemove);
 		this.nameValueList.add(new BasicNameValuePair(name, value));
+		return this;
 	}
 
 	public void submit() {

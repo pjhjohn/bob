@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.contact;
+package com.appspot.wecookbob.view;
 
 public class ContactUser {
 	private final String userName;

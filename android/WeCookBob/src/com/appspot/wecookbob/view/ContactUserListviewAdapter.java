@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.contact;
+package com.appspot.wecookbob.view;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +21,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appspot.wecookbob.R;
-import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.data.BobLogSQLiteOpenHelper;
+import com.appspot.wecookbob.data.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.data.PreferenceUtil;
+import com.appspot.wecookbob.data.PreferenceUtil.PROPERTY;
 import com.appspot.wecookbob.lib.PostRequestForm;
-import com.appspot.wecookbob.lib.PreferenceUtil;
 
 public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> implements PostRequestForm.OnResponse{
 	private LayoutInflater inflater;
@@ -80,7 +82,7 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> implem
 				Cursor c = contactsDb.rawQuery("SELECT * FROM contacts WHERE userName = ?", userName);
 				c.moveToFirst();
 				String phoneNumber = c.getString(c.getColumnIndex("phoneNumber"));
-				String senderId = PreferenceUtil.instance(getContext()).userId();
+				String senderId = PreferenceUtil.getInstance(getContext()).getString(PROPERTY.USER_ID,"");
 				String userId = c.getString(c.getColumnIndex("userId"));
 				if (btnID == R.id.btn_send_first_bob) {
 					PostRequestForm form = new PostRequestForm(ContactUserListviewAdapter.this,"http://wecookbob.appspot.com/bob");
@@ -124,11 +126,18 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> implem
 						1);
 				bobLogDb = bobLogHelper.getWritableDatabase();
 				ContentValues bobLogValues = new ContentValues();
-				bobLogValues.put("bobRequestTime", bobRequestTime);
-				bobLogValues.put("bobtnerId", bobtnerId);
-				bobLogValues.put("bobtnerName", bobtnerName);
-				bobLogValues.put("notificationType", BobLog.NotificationType.SENT.toString());
-				bobLogDb.insert("boblog", null, bobLogValues);
+				try{
+					bobLogDb.beginTransaction();
+					bobLogValues.put("bobRequestTime", bobRequestTime);
+					bobLogValues.put("bobtnerId", bobtnerId);
+					bobLogValues.put("bobtnerName", bobtnerName);
+					bobLogValues.put("notificationType", BobLog.NotificationType.SENT.toString());
+					bobLogDb.insert("boblog", null, bobLogValues);
+					bobLogDb.setTransactionSuccessful();
+				} catch (SQLException e){
+				} finally {
+					bobLogDb.endTransaction();
+				}
 				bobLogDb.close();
 				contactsDb = contactsHelper.getWritableDatabase();
 				ContentValues updateValues = new ContentValues();
@@ -137,7 +146,6 @@ public class ContactUserListviewAdapter extends ArrayAdapter<ContactUser> implem
 				this.notifyDataSetChanged();
 				Toast.makeText(this.myContext, "상대방에게 밥을 보냈습니다",
 						Toast.LENGTH_SHORT).show();
-				ContactUserListviewAdapter.this.notifyDataSetChanged();
 			}
 			else if (success) {
 				Toast.makeText(this.myContext, "상대방이 배가 부릅니다",

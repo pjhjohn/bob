@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.lib;
+package com.appspot.wecookbob.gcm;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,9 +11,14 @@ import android.os.*;
 import android.support.v4.app.*;
 import android.util.*;
 
-import com.appspot.wecookbob.*;
-import com.appspot.wecookbob.contact.BobLog;
-import com.appspot.wecookbob.contact.BobLogListviewAdapter;
+
+import com.appspot.wecookbob.R;
+import com.appspot.wecookbob.activity.MainActivity;
+import com.appspot.wecookbob.data.BobLogSQLiteOpenHelper;
+import com.appspot.wecookbob.data.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.data.PreferenceUtil;
+import com.appspot.wecookbob.data.PreferenceUtil.PROPERTY;
+import com.appspot.wecookbob.view.*;
 import com.google.android.gms.gcm.*;
 
 public class GcmIntentService extends IntentService
@@ -107,8 +112,8 @@ public class GcmIntentService extends IntentService
 	// a GCM message.
 	private void sendNotification(String msg)
 	{
-		String getAlarm = PreferenceUtil.instance(getApplicationContext()).getAlarm();
-		if(getAlarm.equals("true")){
+		boolean getAlarm = PreferenceUtil.getInstance(getApplicationContext()).getBoolean(PROPERTY.ALARM, true);
+		if(getAlarm){
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 			Intent intent = new Intent(getApplicationContext(), MainActivity.class);

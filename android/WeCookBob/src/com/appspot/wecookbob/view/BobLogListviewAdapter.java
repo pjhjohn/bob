@@ -1,4 +1,4 @@
-package com.appspot.wecookbob.contact;
+package com.appspot.wecookbob.view;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appspot.wecookbob.R;
-import com.appspot.wecookbob.contact.BobLog.NotificationType;
-import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.data.BobLogSQLiteOpenHelper;
+import com.appspot.wecookbob.data.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.data.PreferenceUtil;
+import com.appspot.wecookbob.data.PreferenceUtil.PROPERTY;
 import com.appspot.wecookbob.lib.PostRequestForm;
-import com.appspot.wecookbob.lib.PreferenceUtil;
+import com.appspot.wecookbob.view.BobLog.NotificationType;
 
 
 public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostRequestForm.OnResponse {
@@ -94,7 +94,7 @@ public class BobLogListviewAdapter extends ArrayAdapter<BobLog> implements PostR
 				elementData.type = NotificationType.SENT;
 
 				PostRequestForm form = new PostRequestForm(BobLogListviewAdapter.this,"http://wecookbob.appspot.com/bob");
-				form.put("sender-user-id", PreferenceUtil.instance(myContext).userId());
+				form.put("sender-user-id", PreferenceUtil.getInstance(myContext).getString(PROPERTY.USER_ID,""));
 				form.put("receiver-user-id", bobtnerId);
 				form.submit();
 				Toast.makeText(myContext, bobtnerId + "에게 밥을 보냅니다", Toast.LENGTH_LONG).show();

@@ -1,4 +1,4 @@
-package com.appspot.wecookbob;
+package com.appspot.wecookbob.activity;
 
 import java.util.ArrayList;
 
@@ -20,12 +20,16 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.appspot.wecookbob.contact.ContactUser;
-import com.appspot.wecookbob.contact.ContactUserListviewAdapter;
-import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.Contact;
-import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
+import com.appspot.wecookbob.R;
+import com.appspot.wecookbob.R.id;
+import com.appspot.wecookbob.R.layout;
+import com.appspot.wecookbob.R.menu;
+import com.appspot.wecookbob.data.BobLogSQLiteOpenHelper;
+import com.appspot.wecookbob.data.ContactsSQLiteOpenHelper;
 import com.appspot.wecookbob.lib.PostRequestForm;
+import com.appspot.wecookbob.view.Contact;
+import com.appspot.wecookbob.view.ContactUser;
+import com.appspot.wecookbob.view.ContactUserListviewAdapter;
 
 public class ContactsActivity extends Activity {
 	public ArrayList<Contact> contactlist;

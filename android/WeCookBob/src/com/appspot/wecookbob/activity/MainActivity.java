@@ -1,9 +1,8 @@
-package com.appspot.wecookbob;
+package com.appspot.wecookbob.activity;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,23 +30,22 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.appspot.wecookbob.contact.BobLog;
-import com.appspot.wecookbob.contact.ContactUser;
-import com.appspot.wecookbob.contact.ContactUserListviewAdapter;
-import com.appspot.wecookbob.contact.BobLog.NotificationType;
-import com.appspot.wecookbob.contact.BobLogListviewAdapter;
-import com.appspot.wecookbob.lib.BobLogSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.ContactsSQLiteOpenHelper;
-import com.appspot.wecookbob.lib.GcmIntentService;
-import com.appspot.wecookbob.lib.MyResultReceiver;
-import com.appspot.wecookbob.lib.MyResultReceiver.Receiver;
+import com.appspot.wecookbob.R;
+import com.appspot.wecookbob.R.id;
+import com.appspot.wecookbob.R.layout;
+import com.appspot.wecookbob.R.menu;
+import com.appspot.wecookbob.data.BobLogSQLiteOpenHelper;
+import com.appspot.wecookbob.data.PreferenceUtil;
+import com.appspot.wecookbob.data.PreferenceUtil.PROPERTY;
+import com.appspot.wecookbob.lib.PostRequestForm;
 import com.appspot.wecookbob.lib.PostRequestForm.OnResponse;
-import com.appspot.wecookbob.lib.PreferenceUtil;
+import com.appspot.wecookbob.view.BobLog;
+import com.appspot.wecookbob.view.BobLogListviewAdapter;
+import com.appspot.wecookbob.view.SignUpDialog;
+import com.appspot.wecookbob.view.BobLog.NotificationType;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import com.appspot.wecookbob.lib.PostRequestForm;
 
 public class MainActivity extends ActionBarActivity implements OnResponse {
 	Switch sw1, sw2;
@@ -58,7 +56,6 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 	private ListView BobLogListView;
 	public static BobLogListviewAdapter BobLogAdapter;
 	private ArrayList<BobLog> bobLogArray;
-	public MyResultReceiver mReceiver;
 
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	private static final String SENDER_ID = "71421696637";
@@ -70,22 +67,21 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bob_main);
+		
+		PreferenceUtil pref = PreferenceUtil.getInstance(getApplicationContext());
+		pref.putString("", PROPERTY.SIGNUP_ID);
+		pref.putString("", PROPERTY.SIGNUP_PW);
+		pref.putString("", PROPERTY.SIGNUP_MOBILE);
 
-		showList();
-		
-		PreferenceUtil.instance(getApplicationContext()).putSignupId("");
-		PreferenceUtil.instance(getApplicationContext()).putSignupPw("");
-		PreferenceUtil.instance(getApplicationContext()).putSignupMobile("");
-		
 		TelephonyManager tm =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 		String deviceId = tm.getDeviceId();
-		PreferenceUtil.instance(getApplicationContext()).putDeviceId(deviceId);
+		pref.putString(deviceId, PROPERTY.DEVICE_ID);
 		
-		if(PreferenceUtil.instance(getApplicationContext()).registered().isEmpty()){
+		if(pref.getBoolean(PROPERTY.REGISTERED,false)) {
 			PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/register");
-			form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
-			form.put("reg-id", PreferenceUtil.instance(getApplicationContext()).regId());
-			form.put("device-id", PreferenceUtil.instance(getApplicationContext()).deviceId());
+			form.put("user-id", pref.getString(PROPERTY.USER_ID, ""));
+			form.put("reg-id", pref.getString(PROPERTY.REG_ID, ""));
+			form.put("device-id", pref.getString(PROPERTY.DEVICE_ID, ""));
 			form.submit();
 		}
 		
@@ -99,11 +95,11 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 				if (ischecked) {
 					Toast.makeText(getApplicationContext(), "알림",
 							Toast.LENGTH_LONG).show();
-					PreferenceUtil.instance(getApplicationContext()).putGetAlarm("true");
+					PreferenceUtil.getInstance(getApplicationContext()).putBoolean(true, PROPERTY.ALARM);
 				} else {
 					Toast.makeText(getApplicationContext(), "알림 ㄴㄴ",
 							Toast.LENGTH_LONG).show();
-					PreferenceUtil.instance(getApplicationContext()).putGetAlarm("false");
+					PreferenceUtil.getInstance(getApplicationContext()).putBoolean(false, PROPERTY.ALARM);
 				}
 			}
 		});
@@ -118,15 +114,17 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 				if (ischecked) {
 					Toast.makeText(getApplicationContext(), "배곺",
 							Toast.LENGTH_LONG).show();
+					PreferenceUtil pref = PreferenceUtil.getInstance(getApplicationContext());
 					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_hungry");
-					form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
+					form.put("user-id", pref.getString(PROPERTY.USER_ID, ""));
 					form.submit();
 
 				} else {
 					Toast.makeText(getApplicationContext(), "배불",
 							Toast.LENGTH_LONG).show();
+					PreferenceUtil pref = PreferenceUtil.getInstance(getApplicationContext());
 					PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/set_full");
-					form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
+					form.put("user-id", pref.getString(PROPERTY.USER_ID, ""));
 					form.submit();
 				}
 			}
@@ -173,20 +171,20 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		if(item.getItemId() == R.id.action_settings){
 			// ( 1 ) add a new item 
 			// ( 2 ) change add to remove
-			Toast.makeText(MainActivity.this, "식사를 시작해볼텐가?",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, "식사를 시작해볼텐가?", Toast.LENGTH_SHORT).show();
+			PreferenceUtil pref = PreferenceUtil.getInstance(getApplicationContext());
 			PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/unregister");
-			form.put("user-id", PreferenceUtil.instance(getApplicationContext()).userId());
-			form.put("reg-id", PreferenceUtil.instance(getApplicationContext()).regId());
-			form.put("device-id", PreferenceUtil.instance(getApplicationContext()).deviceId());
+			form.put("user-id", pref.getString(PROPERTY.USER_ID, ""));
+			form.put("reg-id", pref.getString(PROPERTY.REG_ID, ""));
+			form.put("device-id", pref.getString(PROPERTY.DEVICE_ID, ""));
 			System.out.println("unregister");
-			System.out.println(PreferenceUtil.instance(getApplicationContext()).userId());
-			System.out.println(PreferenceUtil.instance(getApplicationContext()).regId());
-			System.out.println(PreferenceUtil.instance(getApplicationContext()).deviceId());
+			System.out.println(pref.getString(PROPERTY.USER_ID, ""));
+			System.out.println(pref.getString(PROPERTY.REG_ID, ""));
+			System.out.println(pref.getString(PROPERTY.DEVICE_ID, ""));
 			form.submit();
-			PreferenceUtil.instance(getApplicationContext()).putUserId("");
-			PreferenceUtil.instance(getApplicationContext()).putUserName("");
-			PreferenceUtil.instance(getApplicationContext()).putRegistered("");
+			pref.putString("", PROPERTY.USER_ID);
+			pref.putString("", PROPERTY.USER_NAME);
+			pref.putString("", PROPERTY.REGISTERED);
 			Intent intent = new Intent(this, SignUpActivity.class);
 	        startActivity(intent);
 		}
@@ -278,13 +276,13 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 	// registration  id를 가져온다.
 	private String getRegistrationId()
 	{
-		String registrationId = PreferenceUtil.instance(getApplicationContext()).regId();
+		String registrationId = PreferenceUtil.getInstance(getApplicationContext()).getString(PROPERTY.REG_ID, "");
 		if (TextUtils.isEmpty(registrationId))
 		{
 			Log.i("MainActivity.java | getRegistrationId", "|Registration not found.|");
 			return "";
 		}
-		int registeredVersion = PreferenceUtil.instance(getApplicationContext()).appVersion();
+		int registeredVersion = PreferenceUtil.getInstance(getApplicationContext()).getInteger(PROPERTY.APP_VERSION, Integer.MIN_VALUE);
 		int currentVersion = getAppVersion();
 		if (registeredVersion != currentVersion)
 		{
@@ -358,8 +356,8 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 	{
 		int appVersion = getAppVersion();
 		Log.i("MainActivity.java | storeRegistrationId", "|" + "Saving regId on app version " + appVersion + "|");
-		PreferenceUtil.instance(getApplicationContext()).putRegId(regId);
-		PreferenceUtil.instance(getApplicationContext()).putAppVersion(appVersion);
+		PreferenceUtil.getInstance(getApplicationContext()).putString(regId, PROPERTY.REG_ID);
+		PreferenceUtil.getInstance(getApplicationContext()).putInteger(appVersion,PROPERTY.APP_VERSION);
 	}
 
 	@Override
@@ -372,7 +370,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 			{
 				if (jsonResponse.getBoolean("registered"))
 				{
-					PreferenceUtil.instance(getApplicationContext()).putRegistered("registered");
+					PreferenceUtil.getInstance(getApplicationContext()).putBoolean(true, PROPERTY.REGISTERED);
 				}
 			}
 		} catch (JSONException e) {
