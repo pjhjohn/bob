@@ -97,8 +97,7 @@
 					    android:layout_width="100pt" 
 					    android:layout_height="wrap_content" 
 					    android:layout_marginTop="10dip" 
-					    android:background="#FFFFFF" 
-					    android:onClick="showBobMain" 
+					    android:background="#FFFFFF"  
 					    android:padding="10dip" 
 					    android:text="@string/start_bob" 
 					    android:textSize="11pt" />
@@ -186,7 +185,6 @@
 			    android:layout_marginTop="8dip" 
 			    android:background="#FFFFFF" 
 			    android:padding="9dip" 
-			    android:onClick="get_certificate_number"
 			    android:text="@string/get_certification_number" 
 			    android:textSize="11pt" />
 			
@@ -213,8 +211,7 @@
 					android:layout_width="75dip" 
 				    android:layout_height="40dip" 
 					android:layout_marginLeft="10dip" 
-				    android:background="#FFFFFF" 
-					android:onClick="certificate_phonenumber" 
+				    android:background="#FFFFFF"  
 				    android:text="@string/certification_complete" />
 		        
 	    	</LinearLayout>

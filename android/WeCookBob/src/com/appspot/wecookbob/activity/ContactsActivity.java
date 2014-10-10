@@ -107,7 +107,6 @@ public class ContactsActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.contacts, menu);
 		return true;
 	}
@@ -162,7 +161,7 @@ public class ContactsActivity extends Activity {
 				String phoneNumber = contactCursor.getString(1).replaceAll("-",
 						"");
 				Contact acontact = new Contact();
-				acontact.setPhoneNumber(phoneNumber);
+				acontact.setMobile(phoneNumber);
 				acontact.setUserName(contactCursor.getString(2));
 				acontact.setUserId(null);
 				acontact.setHasLog(false);
@@ -172,7 +171,7 @@ public class ContactsActivity extends Activity {
 
 		JSONArray dataCollection = new JSONArray();
 		for(int i = 0; i < contactlist.size(); i++) {
-			dataCollection.put(contactlist.get(i).getPhoneNumber());
+			dataCollection.put(contactlist.get(i).getMobile());
 		}
 		String stringToSend = dataCollection.toString();
 		PostRequestForm form = new PostRequestForm(syncRequestReceiver,"http://wecookbob.appspot.com/contacts");
@@ -188,7 +187,7 @@ public class ContactsActivity extends Activity {
 			for (int i = 0; i < listToInsert.size(); i++) {
 				values.clear();
 				values.put("userName", listToInsert.get(i).getUserName());
-				values.put("phoneNumber", listToInsert.get(i).getPhoneNumber());
+				values.put("phoneNumber", listToInsert.get(i).getMobile());
 				values.put("hasLog", listToInsert.get(i).getHasLog());
 				if (listToInsert.get(i).getUserId() != null) values.put("userId",
 						listToInsert.get(i).getUserId());
@@ -226,7 +225,7 @@ public class ContactsActivity extends Activity {
 	}
 
 	public void addFriend(String userName) {
-
+		// TODO : implemente it!
 	}
 
 	public ArrayList<String> getBobtnerIdList() {
@@ -247,7 +246,6 @@ public class ContactsActivity extends Activity {
 	public PostRequestForm.OnResponse syncRequestReceiver = new PostRequestForm.OnResponse() {
 		@Override
 		public void onResponse(String responseBody) {
-			// TODO Auto-generated method stub
 			JSONObject jsonResponse;
 			try {
 				jsonResponse = new JSONObject(responseBody);

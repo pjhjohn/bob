@@ -48,9 +48,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class MainActivity extends ActionBarActivity implements OnResponse {
-	Switch sw1, sw2;
-	SQLiteDatabase bobLogDb;
-	BobLogSQLiteOpenHelper bobLogHelper;
+	private SQLiteDatabase bobLogDb;
+	private BobLogSQLiteOpenHelper bobLogHelper;
 
 	//declare main listview components
 	private ListView BobLogListView;
@@ -62,52 +61,43 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 	private GoogleCloudMessaging _gcm;
 	private String _regId;
+	private PreferenceUtil pref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.bob_main);
+		this.setContentView(R.layout.bob_main);
+		// Listener 
+		this.findViewById(R.id.addFriendBtn).setOnClickListener(this.showAddFriendTab);
 		
-		PreferenceUtil pref = PreferenceUtil.getInstance(getApplicationContext());
-		pref.putString("", PROPERTY.SIGNUP_ID);
-		pref.putString("", PROPERTY.SIGNUP_PW);
-		pref.putString("", PROPERTY.SIGNUP_MOBILE);
+		String deviceId = ((TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+		
+		this.pref = PreferenceUtil.getInstance(getApplicationContext());
+		this.pref.putString("", PROPERTY.SIGNUP_ID);
+		this.pref.putString("", PROPERTY.SIGNUP_PW);
+		this.pref.putString("", PROPERTY.SIGNUP_MOBILE);
+		this.pref.putString(deviceId, PROPERTY.DEVICE_ID);
+		if(pref.getBoolean(PROPERTY.REGISTERED, false)!=null && pref.getBoolean(PROPERTY.REGISTERED, false).booleanValue())
+			new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/register")
+			.put("user-id", pref.getString(PROPERTY.USER_ID, ""))
+			.put("reg-id", pref.getString(PROPERTY.REG_ID, ""))
+			.put("device-id", pref.getString(PROPERTY.DEVICE_ID, ""))
+			.submit();
 
-		TelephonyManager tm =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		String deviceId = tm.getDeviceId();
-		pref.putString(deviceId, PROPERTY.DEVICE_ID);
-		
-		if(pref.getBoolean(PROPERTY.REGISTERED,false)) {
-			PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/register");
-			form.put("user-id", pref.getString(PROPERTY.USER_ID, ""));
-			form.put("reg-id", pref.getString(PROPERTY.REG_ID, ""));
-			form.put("device-id", pref.getString(PROPERTY.DEVICE_ID, ""));
-			form.submit();
-		}
-		
-		
-		sw1 = (Switch) findViewById(R.id.alarm_switch);
-		sw1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+		// Switches
+		((Switch) findViewById(R.id.alarm_switch)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean ischecked) {
+			public void onCheckedChanged(CompoundButton buttonView, boolean ischecked) {
 				if (ischecked) {
-					Toast.makeText(getApplicationContext(), "알림",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "알림", Toast.LENGTH_LONG).show();
 					PreferenceUtil.getInstance(getApplicationContext()).putBoolean(true, PROPERTY.ALARM);
 				} else {
-					Toast.makeText(getApplicationContext(), "알림 ㄴㄴ",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "알림 ㄴㄴ", Toast.LENGTH_LONG).show();
 					PreferenceUtil.getInstance(getApplicationContext()).putBoolean(false, PROPERTY.ALARM);
 				}
 			}
 		});
-
-
-		sw2 = (Switch) findViewById(R.id.status_switch);
-		sw2.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+		((Switch) findViewById(R.id.status_switch)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean ischecked) {
@@ -128,70 +118,67 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 					form.submit();
 				}
 			}
-
-
 		});
 
-		//다이얼로그를 띄워줌.
-		SignUpDialog SUDialog = new SignUpDialog();
-		SUDialog.show(getFragmentManager(), "Mytag");
+		// Signup Dialog
+		new SignUpDialog().show(getFragmentManager(), "Mytag");
 
-		//      if (checkDataBase()) showList();
-
-		// google play service가 사용가능한가
-		if (checkPlayServices())
-		{
+		// Check if GooglePlayService is availiable
+		if (this.checkPlayServices()) {
 			_gcm = GoogleCloudMessaging.getInstance(this);
 			_regId = getRegistrationId();
 			System.out.println(_regId);
-			if (TextUtils.isEmpty(_regId))
-				registerInBackground();
-		}
-		else
-		{
+			if (TextUtils.isEmpty(_regId)) registerInBackground();
+		} else {
 			Log.i("MainActivity.java | onCreate", "|No valid Google Play Services APK found.|");
 		}
-
 		// display received msg
 		String msg = getIntent().getStringExtra("msg");
 	}
-
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main_activity_action, menu);
-
+		this.getMenuInflater().inflate(R.menu.main_activity_action, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-
+	
+	// Check if GooglePlayService is availiable
+	private boolean checkPlayServices() {
+		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		if (resultCode != ConnectionResult.SUCCESS) {
+			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+				GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+			} else {
+				Log.i("MainActivity.java | checkPlayService", "|This device is not supported.|");
+				finish();
+			} return false;
+		} return true;
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle presses on the action bar items
-		if(item.getItemId() == R.id.action_settings){
-			// ( 1 ) add a new item 
-			// ( 2 ) change add to remove
-			Toast.makeText(MainActivity.this, "식사를 시작해볼텐가?", Toast.LENGTH_SHORT).show();
-			PreferenceUtil pref = PreferenceUtil.getInstance(getApplicationContext());
-			PostRequestForm form = new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/unregister");
-			form.put("user-id", pref.getString(PROPERTY.USER_ID, ""));
-			form.put("reg-id", pref.getString(PROPERTY.REG_ID, ""));
-			form.put("device-id", pref.getString(PROPERTY.DEVICE_ID, ""));
-			System.out.println("unregister");
-			System.out.println(pref.getString(PROPERTY.USER_ID, ""));
-			System.out.println(pref.getString(PROPERTY.REG_ID, ""));
-			System.out.println(pref.getString(PROPERTY.DEVICE_ID, ""));
-			form.submit();
-			pref.putString("", PROPERTY.USER_ID);
-			pref.putString("", PROPERTY.USER_NAME);
-			pref.putString("", PROPERTY.REGISTERED);
-			Intent intent = new Intent(this, SignUpActivity.class);
-	        startActivity(intent);
-		}
-		else{
-			// if a the new item is clicked show "Toast" message.
-		}
-
+		// TODO : Implementation of function with item button should be implemented.
+//		if(item.getItemId() == R.id.action_settings){
+//			// ( 1 ) add a new item 
+//			// ( 2 ) change add to remove
+//			Toast.makeText(MainActivity.this, "식사를 시작해볼텐가?", Toast.LENGTH_SHORT).show();
+//			System.out.println("unregister");
+//			System.out.println(pref.getString(PROPERTY.USER_ID, ""));
+//			System.out.println(pref.getString(PROPERTY.REG_ID, ""));
+//			System.out.println(pref.getString(PROPERTY.DEVICE_ID, ""));
+//			
+//			new PostRequestForm(MainActivity.this, "http://wecookbob.appspot.com/unregister")
+//				.put("user-id"  , this.pref.getString(PROPERTY.USER_ID  , ""))
+//				.put("reg-id"   , this.pref.getString(PROPERTY.REG_ID   , ""))
+//				.put("device-id", this.pref.getString(PROPERTY.DEVICE_ID, ""))
+//				.submit();
+//			this.pref.putString("", PROPERTY.USER_ID   );
+//			this.pref.putString("", PROPERTY.USER_NAME );
+//			this.pref.putBoolean(false, PROPERTY.REGISTERED);
+//	        this.startActivity(new Intent(this, SignUpActivity.class));
+//		} else {
+//			// TODO : if a the new item is clicked show "Toast" message.
+//		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -220,22 +207,18 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		BobLogAdapter = new BobLogListviewAdapter(this, bobLogArray, R.layout.bob_log_list_item, R.id.btn_bob);
 		BobLogListView.setAdapter(BobLogAdapter);
 	}
-
-	public void showAddFriendTab(View view) {
-		Toast.makeText(MainActivity.this, "애드 프렌드",
-				Toast.LENGTH_SHORT).show();
-		Intent intent = new Intent(this, ContactsActivity.class);
-		startActivity(intent);
-
-		// Do something in response to button
-	}
-
-
+	
+	View.OnClickListener showAddFriendTab = new View.OnClickListener() {
+		@Override
+		public void onClick(View view) {
+			Toast.makeText(MainActivity.this, "애드 프렌드", Toast.LENGTH_SHORT).show();
+			startActivity(new Intent(MainActivity.this, ContactsActivity.class));		}
+	};
+	
 	private boolean checkDataBase() {
 		SQLiteDatabase checkBobLogDb = null;
 		try {
-			checkBobLogDb = SQLiteDatabase.openDatabase("//data/data/com.appspot.wecookbob/databases/boblog.db", null,
-					SQLiteDatabase.OPEN_READONLY);
+			checkBobLogDb = SQLiteDatabase.openDatabase("//data/data/com.appspot.wecookbob/databases/boblog.db", null, SQLiteDatabase.OPEN_READONLY);
 			checkBobLogDb.close();
 		} catch (SQLiteException e) {
 			// database doesn't exist yet.
@@ -244,8 +227,7 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 	}
 
 	@Override
-	protected void onNewIntent(Intent intent)
-	{
+	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 
 		// display received msg
@@ -253,39 +235,17 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		Log.i("MainActivity.java | onNewIntent", "|" + msg + "|");
 	}
 
-	// google play service가 사용가능한가
-	private boolean checkPlayServices()
-	{
-		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-		if (resultCode != ConnectionResult.SUCCESS)
-		{
-			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
-			{
-				GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-			}
-			else
-			{
-				Log.i("MainActivity.java | checkPlayService", "|This device is not supported.|");
-				finish();
-			}
-			return false;
-		}
-		return true;
-	}
 
 	// registration  id를 가져온다.
-	private String getRegistrationId()
-	{
+	private String getRegistrationId() {
 		String registrationId = PreferenceUtil.getInstance(getApplicationContext()).getString(PROPERTY.REG_ID, "");
-		if (TextUtils.isEmpty(registrationId))
-		{
+		if (TextUtils.isEmpty(registrationId)) {
 			Log.i("MainActivity.java | getRegistrationId", "|Registration not found.|");
 			return "";
 		}
 		int registeredVersion = PreferenceUtil.getInstance(getApplicationContext()).getInteger(PROPERTY.APP_VERSION, Integer.MIN_VALUE);
 		int currentVersion = getAppVersion();
-		if (registeredVersion != currentVersion)
-		{
+		if (registeredVersion != currentVersion) {
 			Log.i("MainActivity.java | getRegistrationId", "|App version changed.|");
 			return "";
 		}
@@ -293,35 +253,24 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 	}
 
 	// app version을 가져온다. 뭐에 쓰는건지는 모르겠다.
-	private int getAppVersion()
-	{
-		try
-		{
+	private int getAppVersion() {
+		try {
 			PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			return packageInfo.versionCode;
-		}
-		catch (NameNotFoundException e)
-		{
+		} catch (NameNotFoundException e) {
 			// should never happen
 			throw new RuntimeException("Could not get package name: " + e);
 		}
 	}
 
 	// gcm 서버에 접속해서 registration id를 발급받는다.
-	private void registerInBackground()
-	{
-		new AsyncTask<Void, Void, String>()
-		{
+	private void registerInBackground() {
+		new AsyncTask<Void, Void, String>() {
 			@Override
-			protected String doInBackground(Void... params)
-			{
+			protected String doInBackground(Void... params) {
 				String msg = "";
-				try
-				{
-					if (_gcm == null)
-					{
-						_gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
-					}
+				try {
+					if (_gcm == null) _gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
 					_regId = _gcm.register(SENDER_ID);
 					msg = "Device registered, registration ID=" + _regId;
 
@@ -331,33 +280,28 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 
 					// Persist the regID - no need to register again.
 					storeRegistrationId(_regId);
-				}
-				catch (IOException ex)
-				{
+				} catch (IOException ex) {
 					msg = "Error :" + ex.getMessage();
 					// If there is an error, don't just keep trying to register.
 					// Require the user to click a button again, or perform
 					// exponential back-off.
-				}
-
+				} 
 				return msg;
 			}
 
 			@Override
-			protected void onPostExecute(String msg)
-			{
+			protected void onPostExecute(String msg) {
 				Log.i("MainActivity.java | onPostExecute", "|" + msg + "|");
 			}
 		}.execute(null, null, null);
 	}
 
 	// registraion id를 preference에 저장한다.
-	private void storeRegistrationId(String regId)
-	{
+	private void storeRegistrationId(String regId) {
 		int appVersion = getAppVersion();
 		Log.i("MainActivity.java | storeRegistrationId", "|" + "Saving regId on app version " + appVersion + "|");
-		PreferenceUtil.getInstance(getApplicationContext()).putString(regId, PROPERTY.REG_ID);
-		PreferenceUtil.getInstance(getApplicationContext()).putInteger(appVersion,PROPERTY.APP_VERSION);
+		this.pref.putString(regId, PROPERTY.REG_ID);
+		this.pref.putInteger(appVersion,PROPERTY.APP_VERSION);
 	}
 
 	@Override
@@ -366,12 +310,8 @@ public class MainActivity extends ActionBarActivity implements OnResponse {
 		try {
 			jsonResponse = new JSONObject(responseBody);
 			String responseType = jsonResponse.getString("type");
-			if(responseType.equals("register-check"))
-			{
-				if (jsonResponse.getBoolean("registered"))
-				{
-					PreferenceUtil.getInstance(getApplicationContext()).putBoolean(true, PROPERTY.REGISTERED);
-				}
+			if(responseType.equals("register-check")) {
+				if (jsonResponse.getBoolean("registered")) pref.putBoolean(true, PROPERTY.REGISTERED);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

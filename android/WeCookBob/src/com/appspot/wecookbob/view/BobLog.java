@@ -11,7 +11,6 @@ public class BobLog {
 		RECEIVED, SENT
 	}
 	
-	
 	public BobLog(String bobtnerId, String bobtnerName, NotificationType type, long bobRequestTime) {
 		this.bobtnerId = bobtnerId;
 		this.bobtnerName = bobtnerName;
@@ -19,14 +18,11 @@ public class BobLog {
 		this.bobRequestTime = bobRequestTime;
 	}
 	
-	public static Comparator<BobLog> COMPARE_BY_BOBREQUESTTIME = 
-		new Comparator<BobLog>() {
-	        public int compare(BobLog one, BobLog other) {
-	            return - new Long(one.bobRequestTime).compareTo(other.bobRequestTime);
-	        }
-		};
-		
-
+	public static Comparator<BobLog> COMPARE_BY_BOBREQUESTTIME = new Comparator<BobLog>() {
+        public int compare(BobLog one, BobLog other) {
+            return - new Long(one.bobRequestTime).compareTo(other.bobRequestTime);
+        }
+	};
 	
 	// Setter
 	public void setBobtnerId(String bobtner_id) {

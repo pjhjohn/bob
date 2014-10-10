@@ -4,7 +4,12 @@ import android.content.Context;
 
 public class PreferenceUtil extends BasePreferenceUtil {
 	public static enum PROPERTY {
-		REG_ID, DEVICE_ID, APP_VERSION, USER_ID, USER_NAME, SIGNUP_ID, SIGNUP_PW, SIGNUP_MOBILE, ALARM, REGISTERED
+		// String
+		REG_ID, DEVICE_ID, USER_ID, USER_NAME, SIGNUP_ID, SIGNUP_PW, SIGNUP_MOBILE,  
+		// boolean
+		ALARM, REGISTERED,
+		// int
+		APP_VERSION 
 	}
 	private static PreferenceUtil instance = null;
 	protected PreferenceUtil(Context context) {
@@ -15,26 +20,30 @@ public class PreferenceUtil extends BasePreferenceUtil {
 		return instance;
 	}
 	
+	// Setter
 	public void putString(String value, PROPERTY property) {
-		if(property != PROPERTY.APP_VERSION) super.put(property.toString(), value);
-	}
-	public String getString(PROPERTY property, String _default) {
-		if(property != PROPERTY.APP_VERSION) return super.get(property.toString(), _default);
-		else return null;
+		if(property != PROPERTY.APP_VERSION && property != PROPERTY.REGISTERED && property != PROPERTY.ALARM)
+			super.put(property.toString(), value);
 	}
 	public void putInteger(int value, PROPERTY property) {
 		if(property == PROPERTY.APP_VERSION) super.put(property.toString(), value);
 	}
-	public Integer getInteger(PROPERTY property, int _default) {
-		if(property == PROPERTY.APP_VERSION) return super.get(property.toString(), Integer.MIN_VALUE);
-		else return (Integer) null;
+	public void putBoolean(boolean value, PROPERTY property) {
+		if(property == PROPERTY.REGISTERED || property == PROPERTY.ALARM) super.put(property.toString(), value);
 	}
 	
-	public void putBoolean(Boolean value, PROPERTY property) {
-		if(property !=PROPERTY.APP_VERSION) super.put(property.toString(), value);
+	// Getter : null if the PROPERTY type mismatches
+	public String getString(PROPERTY property, String _default) {
+		if(property != PROPERTY.APP_VERSION && property != PROPERTY.REGISTERED && property != PROPERTY.ALARM)
+			return super.get(property.toString(), _default);
+		else return null;
 	}
-	public boolean getBoolean(PROPERTY property, Boolean _default) {
-		if(property != PROPERTY.APP_VERSION) return super.get(property.toString(), _default);
-		else return (Boolean) null;
+	public Integer getInteger(PROPERTY property, int _default) {
+		if(property == PROPERTY.APP_VERSION) return Integer.valueOf(super.get(property.toString(), Integer.MIN_VALUE));
+		else return null;
+	}
+	public Boolean getBoolean(PROPERTY property, boolean _default) {
+		if(property == PROPERTY.REGISTERED || property == PROPERTY.ALARM) return Boolean.valueOf(super.get(property.toString(), _default));
+		else return null;
 	}
 }
